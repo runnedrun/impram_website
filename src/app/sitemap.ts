@@ -7,6 +7,8 @@ import {
 
 const base = process.env.NEXT_PUBLIC_SITE_URL ?? "https://impram.net";
 
+export const dynamic = "force-dynamic";
+
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const [showSlugs, memberSlugs, pageSlugs] = await Promise.all([
     getAllShowSlugs(),

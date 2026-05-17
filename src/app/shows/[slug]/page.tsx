@@ -18,6 +18,7 @@ export const revalidate = 60;
 type Props = { params: Promise<{ slug: string }> };
 
 export async function generateStaticParams() {
+  if (!process.env.DATABASE_URL && !process.env.POSTGRES_URL) return [];
   const slugs = await getAllShowSlugs();
   return slugs.map((slug) => ({ slug }));
 }

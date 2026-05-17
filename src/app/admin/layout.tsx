@@ -2,6 +2,8 @@ import Link from "next/link";
 import { getSession } from "@/lib/session";
 import { AdminLogoutButton } from "@/components/admin/logout-button";
 
+export const dynamic = "force-dynamic";
+
 export default async function AdminLayout({
   children,
 }: {

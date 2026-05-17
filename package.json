@@ -5,17 +5,19 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
+    "vercel-build": "drizzle-kit push && tsx scripts/seed-neon.ts && tsx scripts/migrate-images-to-blob.ts && next build",
     "start": "next start",
     "lint": "eslint",
     "db:push": "drizzle-kit push",
     "migrate:wp": "tsx scripts/migrate-from-wordpress.ts",
     "seed": "tsx scripts/seed-from-json.ts",
-    "postinstall": "mkdir -p data"
+    "seed:neon": "tsx scripts/seed-neon.ts",
+    "migrate:images": "tsx scripts/migrate-images-to-blob.ts"
   },
   "dependencies": {
     "@base-ui/react": "^1.4.1",
     "@hookform/resolvers": "^5.2.2",
-    "@libsql/client": "^0.17.3",
+    "@neondatabase/serverless": "^1.0.2",
     "@vercel/blob": "^2.3.3",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
@@ -34,6 +36,7 @@
     "zod": "^4.4.3"
   },
   "devDependencies": {
+    "@libsql/client": "^0.17.3",
     "@tailwindcss/postcss": "^4",
     "@types/node": "^20",
     "@types/react": "^19",

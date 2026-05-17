@@ -1,7 +1,14 @@
-import { sqliteTable, text, integer } from "drizzle-orm/sqlite-core";
+import {
+  boolean,
+  integer,
+  jsonb,
+  pgTable,
+  serial,
+  text,
+} from "drizzle-orm/pg-core";
 
-export const shows = sqliteTable("shows", {
-  id: integer("id").primaryKey({ autoIncrement: true }),
+export const shows = pgTable("shows", {
+  id: serial("id").primaryKey(),
   slug: text("slug").notNull().unique(),
   title: text("title").notNull(),
   tagline: text("tagline"),
@@ -10,9 +17,7 @@ export const shows = sqliteTable("shows", {
   status: text("status", { enum: ["current", "archived"] })
     .notNull()
     .default("archived"),
-  featuredOnHome: integer("featured_on_home", { mode: "boolean" })
-    .notNull()
-    .default(false),
+  featuredOnHome: boolean("featured_on_home").notNull().default(false),
   sortOrder: integer("sort_order").notNull().default(0),
   heroImageUrl: text("hero_image_url"),
   cardImageUrl: text("card_image_url"),
@@ -24,31 +29,31 @@ export const shows = sqliteTable("shows", {
   language: text("language"),
   seatingNote: text("seating_note"),
   metaDescription: text("meta_description"),
-  published: integer("published", { mode: "boolean" }).notNull().default(true),
+  published: boolean("published").notNull().default(true),
   createdAt: text("created_at").notNull(),
   updatedAt: text("updated_at").notNull(),
 });
 
-export const members = sqliteTable("members", {
-  id: integer("id").primaryKey({ autoIncrement: true }),
+export const members = pgTable("members", {
+  id: serial("id").primaryKey(),
   slug: text("slug").notNull().unique(),
   name: text("name").notNull(),
   role: text("role").notNull().default("Improviser"),
   photoUrl: text("photo_url"),
   bio: text("bio").notNull().default(""),
-  showCredits: text("show_credits", { mode: "json" })
+  showCredits: jsonb("show_credits")
     .$type<{ showSlug: string; credit: string }[]>()
     .notNull()
     .default([]),
   sortOrder: integer("sort_order").notNull().default(0),
-  published: integer("published", { mode: "boolean" }).notNull().default(true),
+  published: boolean("published").notNull().default(true),
   metaDescription: text("meta_description"),
   createdAt: text("created_at").notNull(),
   updatedAt: text("updated_at").notNull(),
 });
 
-export const sitePages = sqliteTable("site_pages", {
-  id: integer("id").primaryKey({ autoIncrement: true }),
+export const sitePages = pgTable("site_pages", {
+  id: serial("id").primaryKey(),
   slug: text("slug").notNull().unique(),
   title: text("title").notNull(),
   body: text("body").notNull().default(""),

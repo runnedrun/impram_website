@@ -1,12 +1,9 @@
-import { createClient } from "@libsql/client";
-import { drizzle } from "drizzle-orm/libsql";
 import { mkdirSync, writeFileSync } from "fs";
 import { join } from "path";
 import sanitizeHtml from "sanitize-html";
 import { members, shows, sitePages } from "../src/lib/db/schema";
 
 const WP = "https://impram.net/wp-json/wp/v2";
-const DB_URL = process.env.DATABASE_URL ?? "file:data/impram.db";
 
 type WpMediaEmbed = { source_url?: string };
 
@@ -143,11 +140,7 @@ function now() {
 }
 
 async function main() {
-  mkdirSync("data", { recursive: true });
   mkdirSync("content", { recursive: true });
-
-  const client = createClient({ url: DB_URL });
-  const db = drizzle(client, { schema: { shows, members, sitePages } });
 
   const [portfolio, posts, pages, castCategoryId, currentIds] = await Promise.all([
     wpFetchAll<WpPortfolio>("/portfolio"),
@@ -231,28 +224,8 @@ async function main() {
   const seed = { shows: showRows, members: memberRows, sitePages: sitePageRows };
   writeFileSync(join("content", "seed.json"), JSON.stringify(seed, null, 2));
 
-  await client.executeMultiple(`
-    DROP TABLE IF EXISTS shows;
-    DROP TABLE IF EXISTS members;
-    DROP TABLE IF EXISTS site_pages;
-  `);
-
-  const { readFileSync } = await import("fs");
-  const sql = readFileSync(join("drizzle", "0000_init.sql"), "utf8");
-  await client.executeMultiple(sql);
-
-  for (const row of showRows) {
-    await db.insert(shows).values(row);
-  }
-  for (const row of memberRows) {
-    await db.insert(members).values(row);
-  }
-  for (const row of sitePageRows) {
-    await db.insert(sitePages).values(row);
-  }
-
   console.log(
-    `Migrated ${showRows.length} shows, ${memberRows.length} members, ${sitePageRows.length} pages`,
+    `Wrote content/seed.json with ${showRows.length} shows, ${memberRows.length} members, ${sitePageRows.length} pages. Run npm run seed:neon to load Neon.`,
   );
   console.log(`Current shows: ${showRows.filter((s) => s.status === "current").length}`);
 }

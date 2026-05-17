@@ -1,36 +1,51 @@
-import { createClient } from "@libsql/client";
-import { readFileSync, existsSync } from "fs";
+import { neon } from "@neondatabase/serverless";
+import { sql as dsql } from "drizzle-orm";
+import { drizzle } from "drizzle-orm/neon-http";
+import { existsSync, readFileSync } from "fs";
 import { join } from "path";
-import { drizzle } from "drizzle-orm/libsql";
+import { loadEnvFiles } from "../src/lib/load-env";
 import { members, shows, sitePages } from "../src/lib/db/schema";
 
-const DB_URL = process.env.DATABASE_URL ?? "file:data/impram.db";
+loadEnvFiles();
 
 async function main() {
+  const databaseUrl = process.env.DATABASE_URL;
+  if (!databaseUrl) {
+    throw new Error("DATABASE_URL is required");
+  }
+
   const seedPath = join("content", "seed.json");
   if (!existsSync(seedPath)) {
     throw new Error("content/seed.json not found. Run npm run migrate:wp first.");
   }
+
   const seed = JSON.parse(readFileSync(seedPath, "utf8")) as {
     shows: (typeof shows.$inferInsert)[];
     members: (typeof members.$inferInsert)[];
     sitePages: (typeof sitePages.$inferInsert)[];
   };
 
-  const client = createClient({ url: DB_URL });
-  const db = drizzle(client, { schema: { shows, members, sitePages } });
+  const sql = neon(databaseUrl);
+  const db = drizzle(sql, { schema: { shows, members, sitePages } });
 
-  const sql = readFileSync(join("drizzle", "0000_init.sql"), "utf8");
-  await client.executeMultiple(`
-    DROP TABLE IF EXISTS shows;
-    DROP TABLE IF EXISTS members;
-    DROP TABLE IF EXISTS site_pages;
-    ${sql}
-  `);
+  await db.execute(dsql`TRUNCATE TABLE shows, members, site_pages RESTART IDENTITY CASCADE`);
 
-  for (const row of seed.shows) await db.insert(shows).values(row);
-  for (const row of seed.members) await db.insert(members).values(row);
-  for (const row of seed.sitePages) await db.insert(sitePages).values(row);
+  for (const row of seed.shows) {
+    await db.insert(shows).values({
+      ...row,
+      featuredOnHome: row.featuredOnHome === true || row.featuredOnHome === (1 as never),
+      published: row.published === true || row.published === (1 as never),
+    });
+  }
+  for (const row of seed.members) {
+    await db.insert(members).values({
+      ...row,
+      published: row.published === true || row.published === (1 as never),
+    });
+  }
+  for (const row of seed.sitePages) {
+    await db.insert(sitePages).values(row);
+  }
 
   console.log("Seeded database from content/seed.json");
 }
