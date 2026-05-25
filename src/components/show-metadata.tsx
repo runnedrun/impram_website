@@ -1,4 +1,5 @@
 import type { Show } from "@/lib/db/schema";
+import { sectionTitleClass } from "@/lib/typography";
 
 const fields: { key: keyof Show; label: string }[] = [
   { key: "price", label: "Ticket price" },
@@ -24,7 +25,7 @@ export function ShowMetadata({
 
   return (
     <aside className="rounded-2xl border border-border/60 bg-muted/30 p-6 shadow-sm lg:sticky lg:top-28 lg:self-start">
-      <h2 className="mb-4 font-[family-name:var(--font-limelight)] text-2xl text-impram-navy">
+      <h2 className={`mb-4 ${sectionTitleClass} text-2xl`}>
         Show info
       </h2>
       <dl className="space-y-4 text-sm">

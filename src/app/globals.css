@@ -50,6 +50,8 @@
 
 :root {
   --impram-navy: #162b61;
+  --impram-title: #bb2042;
+  --impram-section: #151936;
   --impram-cream: #fdf5e0;
   --impram-accent: #fea75e;
   --impram-link: #2a7de6;
@@ -123,6 +125,8 @@
 
 @theme inline {
   --color-impram-navy: var(--impram-navy);
+  --color-impram-title: var(--impram-title);
+  --color-impram-section: var(--impram-section);
   --color-impram-cream: var(--impram-cream);
   --color-impram-accent: var(--impram-accent);
   --color-impram-link: var(--impram-link);

@@ -2,7 +2,8 @@ import Link from "next/link";
 import { UpcomingShowHero } from "@/components/upcoming-show-hero";
 import { SiteShell } from "@/components/site-shell";
 import { getUpcomingShow } from "@/lib/db/queries";
-import { groupIntro } from "@/lib/site-copy";
+import { groupIntroParagraphs } from "@/lib/site-copy";
+import { pageTitleClass, sectionTitleClass } from "@/lib/typography";
 import { pageMetadata } from "@/lib/seo/metadata";
 
 export const revalidate = 60;
@@ -20,12 +21,14 @@ export default async function HomePage() {
     <SiteShell>
       <div className="flex flex-col gap-16 md:gap-24">
         <section className="flex flex-col items-center text-center max-w-3xl mx-auto pt-8 pb-4">
-          <h1 className="font-[family-name:var(--font-limelight)] text-5xl md:text-6xl text-impram-navy mb-6">
+          <h1 className={`${pageTitleClass} text-5xl md:text-6xl mb-6`}>
             Welcome to Impram
           </h1>
-          <p className="text-xl md:text-2xl leading-relaxed text-muted-foreground">
-            {groupIntro}
-          </p>
+          <div className="space-y-6 text-xl md:text-2xl leading-relaxed text-muted-foreground text-left">
+            {groupIntroParagraphs.map((paragraph) => (
+              <p key={paragraph}>{paragraph}</p>
+            ))}
+          </div>
         </section>
 
         {upcoming ? (
@@ -41,19 +44,19 @@ export default async function HomePage() {
 
         <section className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6 pt-10 border-t border-border/60">
           <Link href="/shows/" className="group flex flex-col p-6 rounded-2xl bg-muted/30 hover:bg-muted/60 transition-colors border border-border/40">
-            <h3 className="font-[family-name:var(--font-limelight)] text-2xl text-impram-navy mb-2 group-hover:text-impram-link transition-colors">Shows</h3>
+            <h3 className={`${sectionTitleClass} text-2xl mb-2 transition-colors group-hover:text-impram-link`}>Shows</h3>
             <p className="text-muted-foreground text-sm">Browse our full history of improvised theater.</p>
           </Link>
           <Link href="/cast/" className="group flex flex-col p-6 rounded-2xl bg-muted/30 hover:bg-muted/60 transition-colors border border-border/40">
-            <h3 className="font-[family-name:var(--font-limelight)] text-2xl text-impram-navy mb-2 group-hover:text-impram-link transition-colors">Cast</h3>
+            <h3 className={`${sectionTitleClass} text-2xl mb-2 transition-colors group-hover:text-impram-link`}>Cast</h3>
             <p className="text-muted-foreground text-sm">Meet the performers behind the scenes.</p>
           </Link>
           <Link href="/join-us/" className="group flex flex-col p-6 rounded-2xl bg-muted/30 hover:bg-muted/60 transition-colors border border-border/40">
-            <h3 className="font-[family-name:var(--font-limelight)] text-2xl text-impram-navy mb-2 group-hover:text-impram-link transition-colors">Join Us</h3>
+            <h3 className={`${sectionTitleClass} text-2xl mb-2 transition-colors group-hover:text-impram-link`}>Join Us</h3>
             <p className="text-muted-foreground text-sm">Want to try improv? Come play with us.</p>
           </Link>
           <Link href="/about-us/" className="group flex flex-col p-6 rounded-2xl bg-muted/30 hover:bg-muted/60 transition-colors border border-border/40">
-            <h3 className="font-[family-name:var(--font-limelight)] text-2xl text-impram-navy mb-2 group-hover:text-impram-link transition-colors">About Us</h3>
+            <h3 className={`${sectionTitleClass} text-2xl mb-2 transition-colors group-hover:text-impram-link`}>About Us</h3>
             <p className="text-muted-foreground text-sm">Learn about our history and organization.</p>
           </Link>
         </section>

@@ -1,7 +1,7 @@
-import { ProseContent } from "@/components/prose-content";
+import { JoinUsContent } from "@/components/join-us-content";
 import { PageHeading } from "@/components/page-heading";
 import { SiteShell } from "@/components/site-shell";
-import { getSitePage } from "@/lib/db/queries";
+import { getOpenRehearsalDates } from "@/lib/db/queries";
 import { pageMetadata } from "@/lib/seo/metadata";
 
 export const revalidate = 60;
@@ -12,13 +12,12 @@ export const metadata = pageMetadata({
 });
 
 export default async function JoinUsPage() {
-  const page = await getSitePage("join-us");
-  if (!page) return null;
+  const dates = await getOpenRehearsalDates();
 
   return (
     <SiteShell>
-      <PageHeading title={page.title} />
-      <ProseContent html={page.body} />
+      <PageHeading title="Join us" />
+      <JoinUsContent dates={dates} />
     </SiteShell>
   );
 }

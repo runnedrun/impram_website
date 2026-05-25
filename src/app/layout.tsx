@@ -27,8 +27,8 @@ const organizationJsonLd = {
   url: "https://impram.net",
   description: "Improv in Gothenburg",
   sameAs: [
-    "https://www.facebook.com/impramgothenburg",
-    "https://www.instagram.com/impramgothenburg/",
+    "https://www.facebook.com/ImpramImprov/",
+    "https://www.instagram.com/impramgbg/",
   ],
 };
 

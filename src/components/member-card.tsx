@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import type { Member } from "@/lib/db/schema";
+import { sectionTitleClass } from "@/lib/typography";
 
 export function MemberCard({ member }: { member: Member }) {
   return (
@@ -22,7 +23,7 @@ export function MemberCard({ member }: { member: Member }) {
         )}
       </div>
       <div className="mt-5">
-        <h3 className="font-[family-name:var(--font-limelight)] text-xl text-foreground transition-colors group-hover:text-impram-link">
+        <h3 className={`${sectionTitleClass} text-xl transition-colors group-hover:text-impram-link`}>
           {member.name}
         </h3>
         <p className="mt-1 text-sm font-medium text-muted-foreground">{member.role}</p>

@@ -24,7 +24,7 @@ export function ShowCard({ show }: { show: Show }) {
         <div className="relative aspect-[16/9] w-full bg-impram-navy" />
       )}
       <div className="flex flex-1 flex-col justify-end p-5 pt-6 bg-impram-navy">
-        <h3 className="font-[family-name:var(--font-limelight)] text-2xl text-impram-cream sm:text-3xl">
+        <h3 className="text-2xl font-bold text-impram-cream sm:text-3xl">
           {show.title}
         </h3>
         {show.tagline && (

@@ -59,6 +59,12 @@ export const members = pgTable("members", {
   updatedAt: text("updated_at").notNull(),
 });
 
+export const openRehearsalDates = pgTable("open_rehearsal_dates", {
+  id: serial("id").primaryKey(),
+  label: text("label").notNull(),
+  sortOrder: integer("sort_order").notNull().default(0),
+});
+
 export const sitePages = pgTable("site_pages", {
   id: serial("id").primaryKey(),
   slug: text("slug").notNull().unique(),
@@ -73,3 +79,4 @@ export type NewShow = typeof shows.$inferInsert;
 export type Member = typeof members.$inferSelect;
 export type NewMember = typeof members.$inferInsert;
 export type SitePage = typeof sitePages.$inferSelect;
+export type OpenRehearsalDate = typeof openRehearsalDates.$inferSelect;

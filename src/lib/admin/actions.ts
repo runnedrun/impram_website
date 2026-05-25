@@ -4,7 +4,7 @@ import { eq } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { db } from "@/lib/db";
-import { members, shows } from "@/lib/db/schema";
+import { members, openRehearsalDates, shows } from "@/lib/db/schema";
 import type { ShowCastCredit } from "@/lib/show-content";
 import { requireAdmin } from "@/lib/session";
 import { assertValidSlug, toSlug } from "@/lib/slug";
@@ -213,4 +213,23 @@ export async function deleteMember(slug: string) {
   revalidatePath("/");
   revalidatePath("/cast");
   redirect("/admin/members/");
+}
+
+export async function saveOpenRehearsalDates(formData: FormData) {
+  await requireAdmin();
+  const raw = String(formData.get("dates") ?? "[]");
+  const labels = (JSON.parse(raw) as string[])
+    .map((label) => label.trim())
+    .filter(Boolean);
+
+  await db.delete(openRehearsalDates);
+  for (let i = 0; i < labels.length; i++) {
+    await db.insert(openRehearsalDates).values({
+      label: labels[i],
+      sortOrder: i,
+    });
+  }
+
+  revalidatePath("/join-us");
+  revalidatePath("/admin/join-us");
 }

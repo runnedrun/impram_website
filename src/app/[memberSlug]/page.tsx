@@ -6,6 +6,7 @@ import { SiteShell } from "@/components/site-shell";
 import { getAllMemberSlugs, getMemberBySlug } from "@/lib/db/queries";
 import { isReservedSlug } from "@/lib/reserved-slugs";
 import { pageMetadata } from "@/lib/seo/metadata";
+import { sectionTitleClass } from "@/lib/typography";
 
 export const revalidate = 60;
 
@@ -45,7 +46,7 @@ export default async function MemberPage({ params }: Props) {
         <p className="text-sm font-medium uppercase tracking-wider text-muted-foreground">
           Cast
         </p>
-        <h1 className="mt-2 font-[family-name:var(--font-limelight)] text-4xl text-impram-navy sm:text-5xl">
+        <h1 className={`mt-2 ${sectionTitleClass} text-4xl sm:text-5xl`}>
           {member.name}
         </h1>
         <p className="mt-2 text-lg text-muted-foreground">{member.role}</p>
@@ -70,7 +71,7 @@ export default async function MemberPage({ params }: Props) {
         </div>
         {credits.length > 0 && (
           <section className="mt-12 border-t border-border/60 pt-10">
-            <h2 className="font-[family-name:var(--font-limelight)] text-2xl text-impram-navy">
+            <h2 className={`${sectionTitleClass} text-2xl`}>
               Shows
             </h2>
             <ul className="mt-4 space-y-3">

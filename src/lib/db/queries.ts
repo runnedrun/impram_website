@@ -1,6 +1,14 @@
 import { and, asc, desc, eq, ne, sql } from "drizzle-orm";
 import { db } from "./index";
-import { members, shows, sitePages, type Member, type Show } from "./schema";
+import {
+  members,
+  openRehearsalDates,
+  shows,
+  sitePages,
+  type Member,
+  type OpenRehearsalDate,
+  type Show,
+} from "./schema";
 
 export async function getPublishedShowsByStatus(status: "current" | "archived") {
   return db
@@ -103,6 +111,13 @@ export async function getAllMemberSlugs() {
   return rows.map((r) => r.slug);
 }
 
+export async function getOpenRehearsalDates() {
+  return db
+    .select()
+    .from(openRehearsalDates)
+    .orderBy(asc(openRehearsalDates.sortOrder), asc(openRehearsalDates.id));
+}
+
 export async function getSitePage(slug: string) {
   const rows = await db.select().from(sitePages).where(eq(sitePages.slug, slug)).limit(1);
   return rows[0] ?? null;
@@ -131,4 +146,4 @@ export async function getAllSitePageSlugs() {
   return rows.map((r) => r.slug);
 }
 
-export type { Member, Show };
+export type { Member, OpenRehearsalDate, Show };

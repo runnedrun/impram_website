@@ -10,6 +10,7 @@ import {
   showHasUpcomingBlock,
   type ShowDisplayCast,
 } from "@/lib/show-content";
+import { sectionTitleClass } from "@/lib/typography";
 
 function ShowCastCard({ member }: { member: ShowDisplayCast }) {
   return (
@@ -33,7 +34,7 @@ function ShowCastCard({ member }: { member: ShowDisplayCast }) {
           </div>
         )}
       </div>
-      <h3 className="mt-4 font-[family-name:var(--font-limelight)] text-lg leading-tight text-foreground transition-colors group-hover:text-impram-link">
+      <h3 className={`mt-4 ${sectionTitleClass} text-lg leading-tight transition-colors group-hover:text-impram-link`}>
         {member.name}
       </h3>
       {member.role && (
@@ -111,7 +112,7 @@ export function ShowBody({
     <div className="flex flex-col gap-14">
       {paragraphs.length > 0 && (
         <section>
-          <h2 className="font-[family-name:var(--font-limelight)] text-3xl text-impram-navy">
+          <h2 className={`${sectionTitleClass} text-3xl`}>
             About the show
           </h2>
           <div className="mt-6 space-y-4 text-lg leading-relaxed text-foreground">
@@ -124,7 +125,7 @@ export function ShowBody({
 
       {hasEvent && (
         <section>
-          <h2 className="font-[family-name:var(--font-limelight)] text-3xl text-impram-navy">
+          <h2 className={`${sectionTitleClass} text-3xl`}>
             Upcoming shows
           </h2>
           <div className="mt-6 overflow-hidden rounded-2xl border border-border/60 shadow-sm">
@@ -155,7 +156,7 @@ export function ShowBody({
 
       {cast.length > 0 && (
         <section>
-          <h2 className="font-[family-name:var(--font-limelight)] text-3xl text-impram-navy">
+          <h2 className={`${sectionTitleClass} text-3xl`}>
             Cast and creative team
           </h2>
           <div className="mt-8 grid grid-cols-2 gap-x-6 gap-y-10 sm:grid-cols-3 lg:grid-cols-4">

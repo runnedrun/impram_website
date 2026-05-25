@@ -14,6 +14,7 @@ import {
 } from "@/lib/db/queries";
 import { showHasUpcomingBlock } from "@/lib/show-content";
 import { pageMetadata } from "@/lib/seo/metadata";
+import { sectionTitleClass } from "@/lib/typography";
 
 export const revalidate = 60;
 
@@ -88,7 +89,7 @@ export default async function ShowPage({ params }: Props) {
           </div>
         )}
         <header className="border-b border-border/60 pb-8">
-          <h1 className="font-[family-name:var(--font-limelight)] text-4xl text-impram-navy sm:text-5xl">
+          <h1 className={`${sectionTitleClass} text-4xl sm:text-5xl`}>
             {show.title}
           </h1>
           {show.tagline && (
@@ -109,7 +110,7 @@ export default async function ShowPage({ params }: Props) {
 
       {related.length > 0 && (
         <section className="mt-16 border-t border-border pt-12">
-          <h2 className="mb-8 font-[family-name:var(--font-limelight)] text-2xl text-impram-navy">
+          <h2 className={`mb-8 ${sectionTitleClass} text-2xl`}>
             Check out other shows
           </h2>
           <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">

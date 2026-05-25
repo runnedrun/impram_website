@@ -11,6 +11,7 @@ const nextConfig: NextConfig = {
     localPatterns: [
       { pathname: "/logo.png" },
       { pathname: "/uploads/**" },
+      { pathname: "/cast/**" },
     ],
   },
   async redirects() {

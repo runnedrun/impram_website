@@ -25,6 +25,9 @@ export default async function AdminLayout({
             <Link href="/admin/members/" className="text-muted-foreground hover:text-foreground">
               Members
             </Link>
+            <Link href="/admin/join-us/" className="text-muted-foreground hover:text-foreground">
+              Join us
+            </Link>
             <Link href="/" className="ml-auto text-impram-link hover:underline">
               View site
             </Link>

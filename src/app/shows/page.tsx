@@ -3,6 +3,7 @@ import { PageHeading } from "@/components/page-heading";
 import { SiteShell } from "@/components/site-shell";
 import { getPublishedShowsByStatus } from "@/lib/db/queries";
 import { pageMetadata } from "@/lib/seo/metadata";
+import { sectionTitleClass } from "@/lib/typography";
 
 export const revalidate = 60;
 
@@ -23,7 +24,7 @@ export default async function ShowsPage() {
       <PageHeading title="Shows" />
       {current.length > 0 && (
         <section className="mb-14">
-          <h2 className="mb-6 font-[family-name:var(--font-limelight)] text-2xl text-impram-navy">
+          <h2 className={`mb-6 ${sectionTitleClass} text-2xl`}>
             Currently playing
           </h2>
           <div className="grid gap-6 sm:grid-cols-2">
@@ -35,7 +36,7 @@ export default async function ShowsPage() {
       )}
       {archived.length > 0 && (
         <section>
-          <h2 className="mb-6 font-[family-name:var(--font-limelight)] text-2xl text-impram-navy">
+          <h2 className={`mb-6 ${sectionTitleClass} text-2xl`}>
             Previous shows
           </h2>
           <div className="grid gap-6 sm:grid-cols-2">

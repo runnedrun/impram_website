@@ -29,7 +29,7 @@ export function UpcomingShowHero({ show }: { show: Show }) {
           <p className="text-sm font-medium uppercase tracking-wider text-impram-accent">
             Next show
           </p>
-          <h2 className="font-[family-name:var(--font-limelight)] text-3xl leading-tight sm:text-4xl">
+          <h2 className="text-3xl font-bold leading-tight text-impram-cream sm:text-4xl">
             {show.title}
           </h2>
           {when && <p className="text-lg text-impram-cream/90">{when}</p>}
