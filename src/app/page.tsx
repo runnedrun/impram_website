@@ -2,7 +2,7 @@ import Link from "next/link";
 import { UpcomingShowHero } from "@/components/upcoming-show-hero";
 import { SiteShell } from "@/components/site-shell";
 import { getUpcomingShow } from "@/lib/db/queries";
-import { groupIntroParagraphs } from "@/lib/site-copy";
+import { groupIntro } from "@/lib/site-copy";
 import { pageTitleClass, sectionTitleClass } from "@/lib/typography";
 import { pageMetadata } from "@/lib/seo/metadata";
 
@@ -24,11 +24,9 @@ export default async function HomePage() {
           <h1 className={`${pageTitleClass} text-5xl md:text-6xl mb-6`}>
             Welcome to Impram
           </h1>
-          <div className="space-y-6 text-xl md:text-2xl leading-relaxed text-muted-foreground text-left">
-            {groupIntroParagraphs.map((paragraph) => (
-              <p key={paragraph}>{paragraph}</p>
-            ))}
-          </div>
+          <p className="text-base md:text-lg leading-relaxed text-muted-foreground">
+            {groupIntro}
+          </p>
         </section>
 
         {upcoming ? (

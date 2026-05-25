@@ -3,13 +3,13 @@ import Link from "next/link";
 import { sectionTitleClass } from "@/lib/typography";
 
 const impramParagraphs = [
-  "Impram was established in Gothenburg in 2015 by a group of people from across the globe united by a love for improv and fun-loving spirit. As expats, they recognized that the best way to find good entertainment in English would be to create it themselves.",
-  "Over the years, Impram have been the home of a diverse community of people. Whether as audience members, improv players or participants in our open sessions and try-out events, we have a place for everyone who enjoys our values of openness, playfulness, and joy.",
-  "Today the group regularly stages longform and shortform improv shows. Additionally, we arrange open sessions where newcomers can come and try out playing improv alongside the members of the group. Our calendar always has something for you to enjoy.",
+  "Impram started in Gothenburg in 2015. We were founded by a group of international friends from all over the world who shared a love for fun, laughter, and improv theater. As expats living in Sweden, they realized the best way to enjoy great English-language entertainment was to create it themselves!",
+  "Over the years, Impram has become a welcoming home for a wonderful, diverse community. Whether you want to watch our shows, perform on stage, or just join our open workshops, there is a place for everyone here. We are all about openness, playfulness, and pure joy.",
+  "Today, we perform regular comedy and theater shows using both quick improv games and longer, improvised stories. We also host friendly open practice sessions where absolutely anyone can come try out improv alongside our team. Check out our \"Join Us\" page for more details. There is always something fun waiting for you!",
 ];
 
 const improvParagraph =
-  "Improvised theater, usually referred to as improv, is a performing art where actors spontaneously create scenes, characters, and dialogue without a script. Instead of relying on predetermined lines or plots, improvisers use creativity and collaboration to explore stories and scenes in real-time. This makes each performance entirely unique and unpredictable.";
+  "Improv (short for improvised theater) is a type of performance where nothing is planned in advance. The performers do not have a script or rehearsed lines. Instead, we use our creativity and teamwork to make up all the characters, jokes, and stories right on the spot in front of the audience. Because everything happens in real-time, every single show is completely unique, surprising, and unpredictable!";
 
 function SectionHeading({ children }: { children: string }) {
   return (
@@ -27,7 +27,7 @@ export function AboutUsContent() {
   return (
     <div className="space-y-14">
       <section>
-        <SectionHeading>Impram</SectionHeading>
+        <SectionHeading>About Impram</SectionHeading>
         <SectionBody>
           {impramParagraphs.map((text) => (
             <p key={text}>{text}</p>
@@ -36,7 +36,7 @@ export function AboutUsContent() {
       </section>
 
       <section>
-        <SectionHeading>What is improv?</SectionHeading>
+        <SectionHeading>What is Improv?</SectionHeading>
         <SectionBody>
           <p>{improvParagraph}</p>
         </SectionBody>

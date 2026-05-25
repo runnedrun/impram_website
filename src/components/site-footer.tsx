@@ -9,7 +9,7 @@ export function SiteFooter() {
           href="/"
           className="flex items-center gap-3 text-muted-foreground transition-opacity hover:opacity-80"
         >
-          <span className="relative block h-9 w-16 shrink-0 sm:h-10 sm:w-[4.5rem]">
+          <span className="relative block h-9 w-16 shrink-0 overflow-hidden rounded-md bg-white sm:h-10 sm:w-[4.5rem]">
             <Image
               src="/logo.png"
               alt="Impram"
@@ -22,38 +22,42 @@ export function SiteFooter() {
             English Improv Group in Gothenburg
           </span>
         </Link>
-        <div className="flex flex-col items-center gap-4 sm:flex-row sm:gap-8">
+        <div className="flex flex-row flex-wrap items-center justify-center gap-x-8 gap-y-3">
           <a
             href="https://www.facebook.com/ImpramImprov/"
             target="_blank"
             rel="noopener noreferrer"
-            className="flex items-center gap-2.5 text-[15px] font-medium text-foreground/80 transition-opacity hover:opacity-80"
+            className="inline-flex items-center gap-2.5 text-[15px] font-medium text-foreground/80 transition-opacity hover:opacity-80"
             aria-label="Impram on Facebook: ImpramImprov"
           >
-            <Image
-              src="/social/facebook.png"
-              alt=""
-              width={28}
-              height={28}
-              className="size-7 shrink-0 rounded-full"
-            />
-            <span>ImpramImprov</span>
+            <span className="relative size-8 shrink-0">
+              <Image
+                src="/social/facebook.png"
+                alt=""
+                fill
+                className="object-contain"
+                sizes="32px"
+              />
+            </span>
+            <span className="whitespace-nowrap">ImpramImprov</span>
           </a>
           <a
             href="https://www.instagram.com/impramgbg/"
             target="_blank"
             rel="noopener noreferrer"
-            className="flex items-center gap-2.5 text-[15px] font-medium text-foreground/80 transition-opacity hover:opacity-80"
+            className="inline-flex items-center gap-2.5 text-[15px] font-medium text-foreground/80 transition-opacity hover:opacity-80"
             aria-label="Impram on Instagram: @IMPRAMGBG"
           >
-            <Image
-              src="/social/instagram.png"
-              alt=""
-              width={28}
-              height={28}
-              className="size-7 shrink-0 rounded-lg"
-            />
-            <span>@IMPRAMGBG</span>
+            <span className="relative size-8 shrink-0">
+              <Image
+                src="/social/instagram.png"
+                alt=""
+                fill
+                className="object-contain"
+                sizes="32px"
+              />
+            </span>
+            <span className="whitespace-nowrap">@IMPRAMGBG</span>
           </a>
         </div>
       </div>

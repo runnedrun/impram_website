@@ -1,3 +1,6 @@
+export const groupIntro =
+  "We are Impram, an English Improv group based in Gothenburg!";
+
 export const groupIntroParagraphs = [
   "We are Impram, an English Improv group based in Gothenburg!",
   "Our group members come from all across the globe, brought together by our shared love for creating pure joy, fun, and laughter.",
