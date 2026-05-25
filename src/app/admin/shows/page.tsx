@@ -1,15 +1,8 @@
 import Link from "next/link";
 import { requireAdminPage } from "@/lib/admin/guard";
 import { getAllShowsAdmin } from "@/lib/db/queries";
+import { ShowsAdminList } from "@/components/admin/shows-admin-list";
 import { buttonVariants } from "@/components/ui/button";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
 
 export default async function AdminShowsPage() {
   await requireAdminPage();
@@ -23,30 +16,7 @@ export default async function AdminShowsPage() {
           New show
         </Link>
       </div>
-      <Table>
-        <TableHeader>
-          <TableRow>
-            <TableHead>Title</TableHead>
-            <TableHead>Status</TableHead>
-            <TableHead>Homepage</TableHead>
-            <TableHead />
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {allShows.map((show) => (
-            <TableRow key={show.slug}>
-              <TableCell>{show.title}</TableCell>
-              <TableCell>{show.status}</TableCell>
-              <TableCell>{show.featuredOnHome ? "Yes" : "No"}</TableCell>
-              <TableCell>
-                <Link href={`/admin/shows/${show.slug}/`} className="text-impram-link hover:underline">
-                  Edit
-                </Link>
-              </TableCell>
-            </TableRow>
-          ))}
-        </TableBody>
-      </Table>
+      <ShowsAdminList shows={allShows} />
     </div>
   );
 }

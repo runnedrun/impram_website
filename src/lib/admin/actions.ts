@@ -5,9 +5,9 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { db } from "@/lib/db";
 import { members, shows } from "@/lib/db/schema";
+import type { ShowCastCredit } from "@/lib/show-content";
 import { requireAdmin } from "@/lib/session";
 import { assertValidSlug, toSlug } from "@/lib/slug";
-import { sanitizeContent } from "@/lib/sanitize";
 
 function timestamp() {
   return new Date().toISOString();
@@ -18,6 +18,11 @@ async function setExclusiveHomepageShow(slug: string) {
   await db.update(shows).set({ featuredOnHome: true }).where(eq(shows.slug, slug));
 }
 
+function parseCastCredits(formData: FormData): ShowCastCredit[] {
+  const raw = String(formData.get("castCredits") ?? "[]");
+  return JSON.parse(raw) as ShowCastCredit[];
+}
+
 function readShowFields(formData: FormData) {
   const upcomingRaw = String(formData.get("upcomingAt") ?? "").trim();
   return {
@@ -26,19 +31,58 @@ function readShowFields(formData: FormData) {
     homeTeaser: String(formData.get("homeTeaser") ?? "") || null,
     status: (formData.get("status") as "current" | "archived") ?? "archived",
     featuredOnHome: formData.get("featuredOnHome") === "on",
-    sortOrder: Number(formData.get("sortOrder") ?? 0),
     heroImageUrl: String(formData.get("heroImageUrl") ?? "") || null,
     cardImageUrl: String(formData.get("cardImageUrl") ?? "") || null,
-    body: sanitizeContent(String(formData.get("body") ?? "")),
-    price: String(formData.get("price") ?? "") || null,
-    duration: String(formData.get("duration") ?? "") || null,
-    interval: String(formData.get("interval") ?? "") || null,
-    venue: String(formData.get("venue") ?? "") || null,
-    language: String(formData.get("language") ?? "") || null,
-    seatingNote: String(formData.get("seatingNote") ?? "") || null,
-    metaDescription: String(formData.get("metaDescription") ?? "") || null,
+    aboutText: String(formData.get("aboutText") ?? "").trim(),
+    ticketUrl: String(formData.get("ticketUrl") ?? "").trim() || null,
+    performanceSummary:
+      String(formData.get("performanceSummary") ?? "").trim() || null,
+    eventNotes: String(formData.get("eventNotes") ?? "").trim() || null,
+    castCredits: parseCastCredits(formData),
+    price: String(formData.get("price") ?? "").trim() || null,
+    duration: String(formData.get("duration") ?? "").trim() || null,
+    interval: String(formData.get("interval") ?? "").trim() || null,
+    venue: String(formData.get("venue") ?? "").trim() || null,
+    language: String(formData.get("language") ?? "").trim() || null,
+    seatingNote: String(formData.get("seatingNote") ?? "").trim() || null,
+    metaDescription: String(formData.get("metaDescription") ?? "").trim() || null,
     published: formData.get("published") !== "off",
   };
+}
+
+async function nextShowSortOrder() {
+  const rows = await db.select({ sortOrder: shows.sortOrder }).from(shows);
+  return rows.reduce((max, row) => Math.max(max, row.sortOrder), -1) + 1;
+}
+
+async function nextMemberSortOrder() {
+  const rows = await db.select({ sortOrder: members.sortOrder }).from(members);
+  return rows.reduce((max, row) => Math.max(max, row.sortOrder), -1) + 1;
+}
+
+export async function reorderShows(orderedSlugs: string[]) {
+  await requireAdmin();
+  for (let i = 0; i < orderedSlugs.length; i++) {
+    await db
+      .update(shows)
+      .set({ sortOrder: i, updatedAt: timestamp() })
+      .where(eq(shows.slug, orderedSlugs[i]));
+  }
+  revalidatePath("/admin/shows");
+  revalidatePath("/shows");
+  revalidatePath("/");
+}
+
+export async function reorderMembers(orderedSlugs: string[]) {
+  await requireAdmin();
+  for (let i = 0; i < orderedSlugs.length; i++) {
+    await db
+      .update(members)
+      .set({ sortOrder: i, updatedAt: timestamp() })
+      .where(eq(members.slug, orderedSlugs[i]));
+  }
+  revalidatePath("/admin/members");
+  revalidatePath("/cast");
 }
 
 export async function createShow(formData: FormData) {
@@ -49,11 +93,13 @@ export async function createShow(formData: FormData) {
 
   const fields = readShowFields(formData);
   const now = timestamp();
+  const sortOrder = await nextShowSortOrder();
 
   await db.insert(shows).values({
     slug,
     title,
     ...fields,
+    sortOrder,
     featuredOnHome: false,
     createdAt: now,
     updatedAt: now,
@@ -121,7 +167,7 @@ export async function createMember(formData: FormData) {
     photoUrl: String(formData.get("photoUrl") ?? "") || null,
     bio: String(formData.get("bio") ?? ""),
     showCredits: [],
-    sortOrder: Number(formData.get("sortOrder") ?? 0),
+    sortOrder: await nextMemberSortOrder(),
     published: formData.get("published") !== "off",
     metaDescription: String(formData.get("metaDescription") ?? "") || null,
     createdAt: now,
@@ -148,7 +194,6 @@ export async function updateMember(slug: string, formData: FormData) {
       role: String(formData.get("role") ?? "Improviser"),
       photoUrl: String(formData.get("photoUrl") ?? "") || null,
       bio: String(formData.get("bio") ?? ""),
-      sortOrder: Number(formData.get("sortOrder") ?? 0),
       published: formData.get("published") !== "off",
       metaDescription: String(formData.get("metaDescription") ?? "") || null,
       updatedAt: timestamp(),

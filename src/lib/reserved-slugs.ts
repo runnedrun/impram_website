@@ -1,4 +1,5 @@
 export const RESERVED_SLUGS = new Set([
+  "home",
   "about-us",
   "cast",
   "shows",

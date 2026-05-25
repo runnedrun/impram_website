@@ -16,8 +16,18 @@ export function sanitizeContent(html: string): string {
     allowedTags,
     allowedAttributes: {
       ...sanitizeHtml.defaults.allowedAttributes,
-      img: ["src", "alt", "width", "height"],
+      img: ["src", "alt", "width", "height", "loading", "decoding"],
       a: ["href", "name", "target", "rel"],
+    },
+    transformTags: {
+      img: (_tagName, attribs) => ({
+        tagName: "img",
+        attribs: {
+          ...attribs,
+          loading: "lazy",
+          decoding: "async",
+        },
+      }),
     },
   });
 }

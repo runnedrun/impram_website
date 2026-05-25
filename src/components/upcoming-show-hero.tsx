@@ -11,7 +11,7 @@ export function UpcomingShowHero({ show }: { show: Show }) {
   const when = formatUpcomingDate(show.upcomingAt);
 
   return (
-    <section className="overflow-hidden rounded-xl bg-impram-navy text-impram-cream">
+    <section className="overflow-hidden rounded-2xl bg-impram-navy text-impram-cream shadow-sm transition-all duration-300 hover:shadow-md">
       <div className="grid md:grid-cols-2">
         {image && (
           <div className="relative aspect-[16/10] min-h-[220px] md:aspect-auto md:min-h-[320px]">

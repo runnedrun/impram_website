@@ -5,6 +5,7 @@ import { existsSync, readFileSync } from "fs";
 import { join } from "path";
 import { loadEnvFiles } from "../src/lib/load-env";
 import { members, shows, sitePages } from "../src/lib/db/schema";
+import { showInsertFromLegacyRow } from "../src/lib/seed-shows";
 
 loadEnvFiles();
 
@@ -20,7 +21,7 @@ async function main() {
   }
 
   const seed = JSON.parse(readFileSync(seedPath, "utf8")) as {
-    shows: (typeof shows.$inferInsert)[];
+    shows: (typeof shows.$inferInsert & { body?: string })[];
     members: (typeof members.$inferInsert)[];
     sitePages: (typeof sitePages.$inferInsert)[];
   };
@@ -31,11 +32,13 @@ async function main() {
   await db.execute(dsql`TRUNCATE TABLE shows, members, site_pages RESTART IDENTITY CASCADE`);
 
   for (const row of seed.shows) {
-    await db.insert(shows).values({
-      ...row,
-      featuredOnHome: row.featuredOnHome === true || row.featuredOnHome === (1 as never),
-      published: row.published === true || row.published === (1 as never),
-    });
+    await db.insert(shows).values(
+      showInsertFromLegacyRow({
+        ...row,
+        featuredOnHome: row.featuredOnHome === true || row.featuredOnHome === (1 as never),
+        published: row.published === true || row.published === (1 as never),
+      }),
+    );
   }
   for (const row of seed.members) {
     await db.insert(members).values({

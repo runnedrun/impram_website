@@ -9,18 +9,31 @@ const fields: { key: keyof Show; label: string }[] = [
   { key: "seatingNote", label: "Seating" },
 ];
 
-export function ShowMetadata({ show }: { show: Show }) {
-  const items = fields.filter((f) => show[f.key]);
+export function ShowMetadata({
+  show,
+  extraItems,
+}: {
+  show: Show;
+  extraItems?: { label: string; value: string }[];
+}) {
+  const dbItems = fields
+    .filter((f) => show[f.key])
+    .map(({ key, label }) => ({ label, value: String(show[key]) }));
+  const items = [...dbItems, ...(extraItems ?? [])];
   if (items.length === 0) return null;
 
   return (
-    <aside className="rounded-lg border border-border bg-muted/40 p-6">
-      <h2 className="mb-4 font-[family-name:var(--font-limelight)] text-xl">Show info</h2>
-      <dl className="space-y-3 text-sm">
-        {items.map(({ key, label }) => (
-          <div key={key}>
+    <aside className="rounded-2xl border border-border/60 bg-muted/30 p-6 shadow-sm lg:sticky lg:top-28 lg:self-start">
+      <h2 className="mb-4 font-[family-name:var(--font-limelight)] text-2xl text-impram-navy">
+        Show info
+      </h2>
+      <dl className="space-y-4 text-sm">
+        {items.map(({ label, value }) => (
+          <div key={`${label}-${value}`}>
             <dt className="font-medium text-muted-foreground">{label}</dt>
-            <dd className="mt-0.5">{String(show[key])}</dd>
+            <dd className="mt-0.5 whitespace-pre-line leading-relaxed">
+              {value}
+            </dd>
           </div>
         ))}
       </dl>

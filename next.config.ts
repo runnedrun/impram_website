@@ -8,10 +8,18 @@ const nextConfig: NextConfig = {
       { protocol: "https", hostname: "*.public.blob.vercel-storage.com", pathname: "/**" },
       { protocol: "https", hostname: "*.blob.vercel-storage.com", pathname: "/**" },
     ],
-    localPatterns: [{ pathname: "/uploads/**" }],
+    localPatterns: [
+      { pathname: "/logo.png" },
+      { pathname: "/uploads/**" },
+    ],
   },
   async redirects() {
     return [
+      {
+        source: "/home",
+        destination: "/",
+        permanent: true,
+      },
       {
         source: "/join-us-obsolete",
         destination: "/join-us/",

@@ -2,29 +2,26 @@
 
 import Link from "next/link";
 import { useState } from "react";
+import { ImageUploadField } from "@/components/admin/image-upload-field";
+import { ShowCastPicker } from "@/components/admin/show-cast-picker";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import type { Show } from "@/lib/db/schema";
+import type { Member, Show } from "@/lib/db/schema";
+import type { ShowCastCredit } from "@/lib/show-content";
 import { createShow, deleteShow, updateShow } from "@/lib/admin/actions";
 
-export function ShowForm({ show }: { show?: Show }) {
+export function ShowForm({
+  show,
+  members,
+}: {
+  show?: Show;
+  members: Member[];
+}) {
   const [heroImageUrl, setHeroImageUrl] = useState(show?.heroImageUrl ?? "");
-  const [uploading, setUploading] = useState(false);
   const action = show ? updateShow.bind(null, show.slug) : createShow;
-
-  async function handleUpload(e: React.ChangeEvent<HTMLInputElement>) {
-    const file = e.target.files?.[0];
-    if (!file) return;
-    setUploading(true);
-    const fd = new FormData();
-    fd.append("file", file);
-    const res = await fetch("/api/admin/upload/", { method: "POST", body: fd });
-    const data = (await res.json()) as { url: string };
-    setHeroImageUrl(data.url);
-    setUploading(false);
-  }
+  const castCredits = (show?.castCredits ?? []) as ShowCastCredit[];
 
   return (
     <form action={action} className="space-y-6">
@@ -90,48 +87,107 @@ export function ShowForm({ show }: { show?: Show }) {
         />
       </div>
 
+      <ImageUploadField
+        label="Hero image"
+        name="heroImageUrl"
+        value={heroImageUrl}
+        onChange={setHeroImageUrl}
+        hiddenName="cardImageUrl"
+        aspectClassName="aspect-[21/9]"
+      />
+
       <div className="space-y-2">
-        <Label>Hero image</Label>
-        <Input type="file" accept="image/*" onChange={handleUpload} disabled={uploading} />
-        <Input
-          name="heroImageUrl"
-          value={heroImageUrl}
-          onChange={(e) => setHeroImageUrl(e.target.value)}
+        <Label htmlFor="aboutText">About the show</Label>
+        <Textarea
+          id="aboutText"
+          name="aboutText"
+          rows={8}
+          defaultValue={show?.aboutText ?? ""}
+          placeholder="Plain text only. Use a blank line between paragraphs."
         />
-        <input type="hidden" name="cardImageUrl" value={heroImageUrl} readOnly />
       </div>
 
-      <div className="space-y-2">
-        <Label htmlFor="body">About the show</Label>
-        <Textarea id="body" name="body" rows={12} defaultValue={show?.body} />
+      <div className="space-y-4 rounded-lg border border-border p-4">
+        <h2 className="text-lg font-semibold">Upcoming performance</h2>
+        <div className="space-y-2">
+          <Label htmlFor="performanceSummary">Date and time summary</Label>
+          <Textarea
+            id="performanceSummary"
+            name="performanceSummary"
+            rows={2}
+            defaultValue={show?.performanceSummary ?? ""}
+            placeholder="Sunday, May 10th, doors open at 11:00AM, show starts at 11:45AM"
+          />
+        </div>
+        <div className="space-y-2">
+          <Label htmlFor="ticketUrl">Ticket URL</Label>
+          <Input
+            id="ticketUrl"
+            name="ticketUrl"
+            type="url"
+            defaultValue={show?.ticketUrl ?? ""}
+            placeholder="https://..."
+          />
+        </div>
+        <div className="grid gap-4 sm:grid-cols-2">
+          <div className="space-y-2">
+            <Label htmlFor="price">Ticket price</Label>
+            <Textarea
+              id="price"
+              name="price"
+              rows={2}
+              defaultValue={show?.price ?? ""}
+            />
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="duration">Schedule</Label>
+            <Textarea
+              id="duration"
+              name="duration"
+              rows={2}
+              defaultValue={show?.duration ?? ""}
+              placeholder={"Doors open at 11:00.\nShow runs 12:00–13:00."}
+            />
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="venue">Venue</Label>
+            <Input id="venue" name="venue" defaultValue={show?.venue ?? ""} />
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="language">Language</Label>
+            <Input
+              id="language"
+              name="language"
+              defaultValue={show?.language ?? ""}
+              placeholder="English"
+            />
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="interval">Interval</Label>
+            <Input id="interval" name="interval" defaultValue={show?.interval ?? ""} />
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="seatingNote">Seating note</Label>
+            <Input
+              id="seatingNote"
+              name="seatingNote"
+              defaultValue={show?.seatingNote ?? ""}
+            />
+          </div>
+        </div>
+        <div className="space-y-2">
+          <Label htmlFor="eventNotes">Extra details</Label>
+          <Textarea
+            id="eventNotes"
+            name="eventNotes"
+            rows={3}
+            defaultValue={show?.eventNotes ?? ""}
+            placeholder="One detail per line, e.g. brunch add-on info"
+          />
+        </div>
       </div>
 
-      <div className="grid gap-4 sm:grid-cols-2">
-        <div className="space-y-2">
-          <Label htmlFor="price">Price</Label>
-          <Input id="price" name="price" defaultValue={show?.price ?? ""} />
-        </div>
-        <div className="space-y-2">
-          <Label htmlFor="duration">Duration</Label>
-          <Input id="duration" name="duration" defaultValue={show?.duration ?? ""} />
-        </div>
-        <div className="space-y-2">
-          <Label htmlFor="interval">Interval</Label>
-          <Input id="interval" name="interval" defaultValue={show?.interval ?? ""} />
-        </div>
-        <div className="space-y-2">
-          <Label htmlFor="venue">Venue</Label>
-          <Input id="venue" name="venue" defaultValue={show?.venue ?? ""} />
-        </div>
-        <div className="space-y-2">
-          <Label htmlFor="language">Language</Label>
-          <Input id="language" name="language" defaultValue={show?.language ?? ""} />
-        </div>
-        <div className="space-y-2">
-          <Label htmlFor="sortOrder">Sort order</Label>
-          <Input id="sortOrder" name="sortOrder" type="number" defaultValue={show?.sortOrder ?? 0} />
-        </div>
-      </div>
+      <ShowCastPicker members={members} initialCredits={castCredits} />
 
       <div className="space-y-2">
         <Label htmlFor="metaDescription">Meta description</Label>

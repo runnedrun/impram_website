@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useState } from "react";
+import { ImageUploadField } from "@/components/admin/image-upload-field";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -11,20 +12,7 @@ import { createMember, deleteMember, updateMember } from "@/lib/admin/actions";
 
 export function MemberForm({ member }: { member?: Member }) {
   const [photoUrl, setPhotoUrl] = useState(member?.photoUrl ?? "");
-  const [uploading, setUploading] = useState(false);
   const action = member ? updateMember.bind(null, member.slug) : createMember;
-
-  async function handleUpload(e: React.ChangeEvent<HTMLInputElement>) {
-    const file = e.target.files?.[0];
-    if (!file) return;
-    setUploading(true);
-    const fd = new FormData();
-    fd.append("file", file);
-    const res = await fetch("/api/admin/upload/", { method: "POST", body: fd });
-    const data = (await res.json()) as { url: string };
-    setPhotoUrl(data.url);
-    setUploading(false);
-  }
 
   return (
     <form action={action} className="space-y-6">
@@ -44,20 +32,18 @@ export function MemberForm({ member }: { member?: Member }) {
         <Input id="role" name="role" defaultValue={member?.role ?? "Improviser"} />
       </div>
 
-      <div className="space-y-2">
-        <Label>Photo</Label>
-        <Input type="file" accept="image/*" onChange={handleUpload} disabled={uploading} />
-        <Input name="photoUrl" value={photoUrl} onChange={(e) => setPhotoUrl(e.target.value)} />
-      </div>
+      <ImageUploadField
+        label="Photo"
+        name="photoUrl"
+        value={photoUrl}
+        onChange={setPhotoUrl}
+        aspectClassName="aspect-square max-w-[200px]"
+        previewClassName="max-w-[200px]"
+      />
 
       <div className="space-y-2">
         <Label htmlFor="bio">Bio</Label>
         <Textarea id="bio" name="bio" rows={8} defaultValue={member?.bio} />
-      </div>
-
-      <div className="space-y-2">
-        <Label htmlFor="sortOrder">Sort order</Label>
-        <Input id="sortOrder" name="sortOrder" type="number" defaultValue={member?.sortOrder ?? 0} />
       </div>
 
       <input type="hidden" name="published" value="on" />

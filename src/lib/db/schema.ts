@@ -21,7 +21,14 @@ export const shows = pgTable("shows", {
   sortOrder: integer("sort_order").notNull().default(0),
   heroImageUrl: text("hero_image_url"),
   cardImageUrl: text("card_image_url"),
-  body: text("body").notNull().default(""),
+  aboutText: text("about_text").notNull().default(""),
+  ticketUrl: text("ticket_url"),
+  performanceSummary: text("performance_summary"),
+  eventNotes: text("event_notes"),
+  castCredits: jsonb("cast_credits")
+    .$type<{ memberSlug: string; role?: string | null }[]>()
+    .notNull()
+    .default([]),
   price: text("price"),
   duration: text("duration"),
   interval: text("interval"),

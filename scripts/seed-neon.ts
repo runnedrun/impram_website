@@ -6,6 +6,7 @@ import { existsSync, readFileSync } from "fs";
 import { join } from "path";
 import { loadEnvFiles } from "../src/lib/load-env";
 import { members, shows, sitePages } from "../src/lib/db/schema";
+import { showInsertFromLegacyRow } from "../src/lib/seed-shows";
 
 loadEnvFiles();
 
@@ -13,7 +14,7 @@ const SQLITE_PATH = "file:data/impram.db";
 const SEED_PATH = join("content", "seed.json");
 
 type SeedData = {
-  shows: (typeof shows.$inferInsert)[];
+  shows: (typeof shows.$inferInsert & { body?: string })[];
   members: (typeof members.$inferInsert)[];
   sitePages: (typeof sitePages.$inferInsert)[];
 };
@@ -29,30 +30,32 @@ async function loadFromSqlite(): Promise<SeedData> {
   const pageRows = await client.execute("SELECT * FROM site_pages ORDER BY id");
 
   return {
-    shows: showRows.rows.map((row) => ({
-      slug: String(row.slug),
-      title: String(row.title),
-      tagline: row.tagline != null ? String(row.tagline) : null,
-      upcomingAt: row.upcoming_at != null ? String(row.upcoming_at) : null,
-      homeTeaser: row.home_teaser != null ? String(row.home_teaser) : null,
-      status: row.status as "current" | "archived",
-      featuredOnHome: normalizeBoolean(row.featured_on_home),
-      sortOrder: Number(row.sort_order),
-      heroImageUrl: row.hero_image_url != null ? String(row.hero_image_url) : null,
-      cardImageUrl: row.card_image_url != null ? String(row.card_image_url) : null,
-      body: String(row.body ?? ""),
-      price: row.price != null ? String(row.price) : null,
-      duration: row.duration != null ? String(row.duration) : null,
-      interval: row.interval != null ? String(row.interval) : null,
-      venue: row.venue != null ? String(row.venue) : null,
-      language: row.language != null ? String(row.language) : null,
-      seatingNote: row.seating_note != null ? String(row.seating_note) : null,
-      metaDescription:
-        row.meta_description != null ? String(row.meta_description) : null,
-      published: normalizeBoolean(row.published),
-      createdAt: String(row.created_at),
-      updatedAt: String(row.updated_at),
-    })),
+    shows: showRows.rows.map((row) =>
+      showInsertFromLegacyRow({
+        slug: String(row.slug),
+        title: String(row.title),
+        tagline: row.tagline != null ? String(row.tagline) : null,
+        upcomingAt: row.upcoming_at != null ? String(row.upcoming_at) : null,
+        homeTeaser: row.home_teaser != null ? String(row.home_teaser) : null,
+        status: row.status as "current" | "archived",
+        featuredOnHome: normalizeBoolean(row.featured_on_home),
+        sortOrder: Number(row.sort_order),
+        heroImageUrl: row.hero_image_url != null ? String(row.hero_image_url) : null,
+        cardImageUrl: row.card_image_url != null ? String(row.card_image_url) : null,
+        body: String(row.body ?? ""),
+        price: row.price != null ? String(row.price) : null,
+        duration: row.duration != null ? String(row.duration) : null,
+        interval: row.interval != null ? String(row.interval) : null,
+        venue: row.venue != null ? String(row.venue) : null,
+        language: row.language != null ? String(row.language) : null,
+        seatingNote: row.seating_note != null ? String(row.seating_note) : null,
+        metaDescription:
+          row.meta_description != null ? String(row.meta_description) : null,
+        published: normalizeBoolean(row.published),
+        createdAt: String(row.created_at),
+        updatedAt: String(row.updated_at),
+      }),
+    ),
     members: memberRows.rows.map((row) => ({
       slug: String(row.slug),
       name: String(row.name),
@@ -81,11 +84,13 @@ async function loadFromSqlite(): Promise<SeedData> {
 function loadFromJson(): SeedData {
   const raw = JSON.parse(readFileSync(SEED_PATH, "utf8")) as SeedData;
   return {
-    shows: raw.shows.map((row) => ({
-      ...row,
-      featuredOnHome: normalizeBoolean(row.featuredOnHome),
-      published: normalizeBoolean(row.published),
-    })),
+    shows: raw.shows.map((row) =>
+      showInsertFromLegacyRow({
+        ...row,
+        featuredOnHome: normalizeBoolean(row.featuredOnHome),
+        published: normalizeBoolean(row.published),
+      }),
+    ),
     members: raw.members.map((row) => ({
       ...row,
       published: normalizeBoolean(row.published),

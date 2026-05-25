@@ -7,24 +7,31 @@ export function ShowCard({ show }: { show: Show }) {
   return (
     <Link
       href={`/shows/${show.slug}/`}
-      className="group relative block overflow-hidden bg-impram-navy"
+      className="group relative flex flex-col overflow-hidden rounded-2xl bg-impram-navy shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-md"
     >
-      {image && (
-        <div className="relative aspect-[16/9] w-full">
+      {image ? (
+        <div className="relative aspect-[16/9] w-full overflow-hidden">
           <Image
             src={image}
             alt={show.title}
             fill
-            className="object-cover transition-transform duration-300 group-hover:scale-105"
-            sizes="(max-width: 768px) 100vw, 50vw"
+            className="object-cover transition-transform duration-500 group-hover:scale-105"
+            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+            loading="lazy"
           />
-          <div className="absolute inset-0 bg-impram-navy/40 transition-opacity group-hover:bg-impram-navy/20" />
         </div>
+      ) : (
+        <div className="relative aspect-[16/9] w-full bg-impram-navy" />
       )}
-      <div className="absolute inset-0 flex items-end p-6">
-        <h3 className="font-[family-name:var(--font-limelight)] text-3xl text-white drop-shadow-md sm:text-4xl">
+      <div className="flex flex-1 flex-col justify-end p-5 pt-6 bg-impram-navy">
+        <h3 className="font-[family-name:var(--font-limelight)] text-2xl text-impram-cream sm:text-3xl">
           {show.title}
         </h3>
+        {show.tagline && (
+          <p className="mt-2 text-sm text-impram-cream/80 line-clamp-2">
+            {show.tagline}
+          </p>
+        )}
       </div>
     </Link>
   );

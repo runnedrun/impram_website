@@ -12,7 +12,10 @@
     "migrate:wp": "tsx scripts/migrate-from-wordpress.ts",
     "seed": "tsx scripts/seed-from-json.ts",
     "seed:neon": "tsx scripts/seed-neon.ts",
-    "migrate:images": "tsx scripts/migrate-images-to-blob.ts"
+    "migrate:images": "tsx scripts/migrate-images-to-blob.ts",
+    "migrate:show-fields": "tsx scripts/migrate-show-fields.ts",
+    "migrate:show-schema": "tsx scripts/apply-show-schema.ts",
+    "refresh:show-content": "tsx scripts/refresh-all-show-content.ts"
   },
   "dependencies": {
     "@base-ui/react": "^1.4.1",

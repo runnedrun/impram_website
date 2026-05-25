@@ -42,14 +42,15 @@ export default async function MemberPage({ params }: Props) {
   return (
     <SiteShell>
       <article className="mx-auto max-w-3xl">
-        <p className="text-sm font-medium uppercase tracking-wide text-muted-foreground">
-          Meet our cast
+        <p className="text-sm font-medium uppercase tracking-wider text-muted-foreground">
+          Cast
         </p>
         <h1 className="mt-2 font-[family-name:var(--font-limelight)] text-4xl text-impram-navy sm:text-5xl">
           {member.name}
         </h1>
+        <p className="mt-2 text-lg text-muted-foreground">{member.role}</p>
         {member.photoUrl && (
-          <div className="relative mx-auto mt-8 aspect-[370/492] max-w-sm overflow-hidden bg-muted">
+          <div className="relative mx-auto mt-10 aspect-[370/492] max-w-sm overflow-hidden rounded-2xl bg-muted shadow-sm">
             <Image
               src={member.photoUrl}
               alt={member.name}
@@ -60,7 +61,7 @@ export default async function MemberPage({ params }: Props) {
             />
           </div>
         )}
-        <div className="mt-8">
+        <div className="mt-10">
           {member.bio.includes("<") ? (
             <ProseContent html={member.bio} />
           ) : (
@@ -68,20 +69,24 @@ export default async function MemberPage({ params }: Props) {
           )}
         </div>
         {credits.length > 0 && (
-          <ul className="mt-8 space-y-2 border-t border-border pt-8">
-            {credits.map((c) => (
-              <li key={`${c.showSlug}-${c.credit}`}>
-                <Link
-                  href={`/shows/${c.showSlug}/`}
-                  className="text-impram-link hover:underline"
-                >
-                  {c.credit}
-                </Link>
-              </li>
-            ))}
-          </ul>
+          <section className="mt-12 border-t border-border/60 pt-10">
+            <h2 className="font-[family-name:var(--font-limelight)] text-2xl text-impram-navy">
+              Shows
+            </h2>
+            <ul className="mt-4 space-y-3">
+              {credits.map((c) => (
+                <li key={`${c.showSlug}-${c.credit}`}>
+                  <Link
+                    href={`/shows/${c.showSlug}/`}
+                    className="text-lg font-medium text-impram-link transition-colors hover:text-impram-link/80"
+                  >
+                    {c.credit}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </section>
         )}
-        <p className="mt-2 text-sm text-muted-foreground">{member.role}</p>
       </article>
     </SiteShell>
   );

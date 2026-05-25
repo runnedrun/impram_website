@@ -26,7 +26,7 @@ export default async function ShowsPage() {
           <h2 className="mb-6 font-[family-name:var(--font-limelight)] text-2xl text-impram-navy">
             Currently playing
           </h2>
-          <div className="grid gap-2 sm:grid-cols-2">
+          <div className="grid gap-6 sm:grid-cols-2">
             {current.map((show) => (
               <ShowCard key={show.slug} show={show} />
             ))}
@@ -38,7 +38,7 @@ export default async function ShowsPage() {
           <h2 className="mb-6 font-[family-name:var(--font-limelight)] text-2xl text-impram-navy">
             Previous shows
           </h2>
-          <div className="grid gap-2 sm:grid-cols-2">
+          <div className="grid gap-6 sm:grid-cols-2">
             {archived.map((show) => (
               <ShowCard key={show.slug} show={show} />
             ))}

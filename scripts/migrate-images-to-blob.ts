@@ -5,7 +5,7 @@ import { drizzle } from "drizzle-orm/neon-http";
 import { existsSync, readFileSync, writeFileSync } from "fs";
 import { join } from "path";
 import { loadEnvFiles } from "../src/lib/load-env";
-import { members, shows } from "../src/lib/db/schema";
+import { members, shows, type Show } from "../src/lib/db/schema";
 
 loadEnvFiles();
 
@@ -104,6 +104,22 @@ function usesWordPressCdn(url: string | null | undefined) {
   return Boolean(url && url.includes(WP_HOST));
 }
 
+function showTextFields(show: Show): (string | null)[] {
+  return [
+    show.aboutText,
+    show.eventNotes,
+    show.performanceSummary,
+    show.homeTeaser,
+    show.price,
+    show.duration,
+    show.metaDescription,
+  ];
+}
+
+function showTextContainsWpHost(show: Show): boolean {
+  return showTextFields(show).some((value) => value?.includes(WP_HOST));
+}
+
 async function main() {
   const databaseUrl = process.env.DATABASE_URL;
   if (!databaseUrl) throw new Error("DATABASE_URL is required");
@@ -123,7 +139,7 @@ async function main() {
       (show) =>
         usesWordPressCdn(show.heroImageUrl) ||
         usesWordPressCdn(show.cardImageUrl) ||
-        show.body.includes(WP_HOST),
+        showTextContainsWpHost(show),
     ) ||
     allMembers.some(
       (member) =>
@@ -140,7 +156,7 @@ async function main() {
     for (const url of collectUrls(
       show.heroImageUrl,
       show.cardImageUrl,
-      show.body,
+      ...showTextFields(show),
     )) {
       urlSet.add(url);
     }
@@ -169,16 +185,46 @@ async function main() {
     const cardImageUrl = show.cardImageUrl
       ? map[show.cardImageUrl] ?? show.cardImageUrl
       : heroImageUrl;
-    const body = replaceUrls(show.body, map);
+    const aboutText = replaceUrls(show.aboutText, map);
+    const eventNotes = show.eventNotes
+      ? replaceUrls(show.eventNotes, map)
+      : null;
+    const performanceSummary = show.performanceSummary
+      ? replaceUrls(show.performanceSummary, map)
+      : null;
+    const homeTeaser = show.homeTeaser
+      ? replaceUrls(show.homeTeaser, map)
+      : null;
+    const price = show.price ? replaceUrls(show.price, map) : null;
+    const duration = show.duration ? replaceUrls(show.duration, map) : null;
+    const metaDescription = show.metaDescription
+      ? replaceUrls(show.metaDescription, map)
+      : null;
 
     if (
       heroImageUrl !== show.heroImageUrl ||
       cardImageUrl !== show.cardImageUrl ||
-      body !== show.body
+      aboutText !== show.aboutText ||
+      eventNotes !== show.eventNotes ||
+      performanceSummary !== show.performanceSummary ||
+      homeTeaser !== show.homeTeaser ||
+      price !== show.price ||
+      duration !== show.duration ||
+      metaDescription !== show.metaDescription
     ) {
       await db
         .update(shows)
-        .set({ heroImageUrl, cardImageUrl, body })
+        .set({
+          heroImageUrl,
+          cardImageUrl,
+          aboutText,
+          eventNotes,
+          performanceSummary,
+          homeTeaser,
+          price,
+          duration,
+          metaDescription,
+        })
         .where(eq(shows.id, show.id));
       console.log(`updated show ${show.slug}`);
     }
