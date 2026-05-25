@@ -12,6 +12,7 @@ const nextConfig: NextConfig = {
       { pathname: "/logo.png" },
       { pathname: "/uploads/**" },
       { pathname: "/cast/**" },
+      { pathname: "/social/**" },
     ],
   },
   async redirects() {
