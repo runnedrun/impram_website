@@ -18,7 +18,7 @@ export default async function CastPage() {
   return (
     <SiteShell>
       <PageHeading title="Cast" />
-      <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+      <div className="grid grid-cols-3 items-start gap-x-3 gap-y-12 sm:gap-x-4 sm:gap-y-10 lg:grid-cols-3 xl:grid-cols-4">
         {cast.map((member) => (
           <MemberCard key={member.slug} member={member} />
         ))}

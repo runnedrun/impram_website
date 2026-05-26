@@ -1,9 +1,13 @@
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { ProseContent } from "@/components/prose-content";
+import { MemberBio } from "@/components/member-bio";
 import { SiteShell } from "@/components/site-shell";
-import { getAllMemberSlugs, getMemberBySlug } from "@/lib/db/queries";
+import {
+  getAllMemberSlugs,
+  getMemberBySlug,
+  getShowsForMember,
+} from "@/lib/db/queries";
 import { isReservedSlug } from "@/lib/reserved-slugs";
 import { pageMetadata } from "@/lib/seo/metadata";
 import { sectionTitleClass } from "@/lib/typography";
@@ -38,50 +42,61 @@ export default async function MemberPage({ params }: Props) {
   const member = await getMemberBySlug(memberSlug);
   if (!member) notFound();
 
-  const credits = member.showCredits ?? [];
+  const memberShows = await getShowsForMember(member.slug);
 
   return (
     <SiteShell>
-      <article className="mx-auto max-w-3xl">
+      <article className="mx-auto max-w-4xl">
         <p className="text-sm font-medium uppercase tracking-wider text-muted-foreground">
           Cast
         </p>
-        <h1 className={`mt-2 ${sectionTitleClass} text-4xl sm:text-5xl`}>
-          {member.name}
-        </h1>
-        <p className="mt-2 text-lg text-muted-foreground">{member.role}</p>
-        {member.photoUrl && (
-          <div className="relative mx-auto mt-10 aspect-[370/492] max-w-sm overflow-hidden rounded-2xl bg-muted shadow-sm">
-            <Image
-              src={member.photoUrl}
-              alt={member.name}
-              fill
-              className="object-cover"
-              sizes="400px"
-              priority
-            />
-          </div>
-        )}
-        <div className="mt-10">
-          {member.bio.includes("<") ? (
-            <ProseContent html={member.bio} />
+
+        <div className="mt-6 grid grid-cols-[112px_1fr] items-start gap-5 sm:grid-cols-[200px_1fr] sm:gap-8 md:grid-cols-[240px_1fr]">
+          {member.photoUrl ? (
+            <div className="relative aspect-[370/492] w-full overflow-hidden rounded-2xl bg-muted shadow-sm">
+              <Image
+                src={member.photoUrl}
+                alt={member.name}
+                fill
+                className="object-cover object-top"
+                sizes="(max-width: 640px) 112px, 240px"
+                priority
+              />
+            </div>
           ) : (
-            <p className="text-lg leading-relaxed">{member.bio}</p>
+            <div className="flex aspect-[370/492] w-full items-center justify-center rounded-2xl bg-muted text-xs text-muted-foreground sm:text-sm">
+              No photo
+            </div>
           )}
+
+          <div className="min-w-0">
+            <h1 className={`${sectionTitleClass} text-2xl leading-tight sm:text-4xl md:text-5xl`}>
+              {member.name}
+            </h1>
+            <p className="mt-1 text-sm text-muted-foreground sm:mt-2 sm:text-lg">
+              {member.role}
+            </p>
+            {member.bio.trim() && (
+              <div className="mt-4 sm:mt-6">
+                <MemberBio bio={member.bio} name={member.name} />
+              </div>
+            )}
+          </div>
         </div>
-        {credits.length > 0 && (
-          <section className="mt-12 border-t border-border/60 pt-10">
-            <h2 className={`${sectionTitleClass} text-2xl`}>
-              Shows
+
+        {memberShows.length > 0 && (
+          <section className="mt-12 rounded-2xl border border-border/60 bg-muted/20 p-6 shadow-sm sm:p-8">
+            <h2 className={`${sectionTitleClass} text-xl sm:text-2xl`}>
+              Previous shows
             </h2>
-            <ul className="mt-4 space-y-3">
-              {credits.map((c) => (
-                <li key={`${c.showSlug}-${c.credit}`}>
+            <ul className="mt-4 space-y-2.5">
+              {memberShows.map((show) => (
+                <li key={show.slug}>
                   <Link
-                    href={`/shows/${c.showSlug}/`}
-                    className="text-lg font-medium text-impram-link transition-colors hover:text-impram-link/80"
+                    href={`/shows/${show.slug}/`}
+                    className="text-base font-medium text-impram-link transition-colors hover:text-impram-link/80 sm:text-lg"
                   >
-                    {c.credit}
+                    {show.title}
                   </Link>
                 </li>
               ))}

@@ -103,6 +103,30 @@ export async function getMemberBySlug(slug: string) {
   return rows[0] ?? null;
 }
 
+export async function getShowsForMember(memberSlug: string) {
+  return db
+    .select({
+      slug: shows.slug,
+      title: shows.title,
+      status: shows.status,
+    })
+    .from(shows)
+    .where(
+      and(
+        eq(shows.published, true),
+        sql`EXISTS (
+          SELECT 1 FROM jsonb_array_elements(${shows.castCredits}) AS credit
+          WHERE credit->>'memberSlug' = ${memberSlug}
+        )`,
+      ),
+    )
+    .orderBy(
+      sql`CASE WHEN ${shows.status} = 'current' THEN 0 ELSE 1 END`,
+      asc(shows.sortOrder),
+      desc(shows.updatedAt),
+    );
+}
+
 export async function getAllMemberSlugs() {
   const rows = await db
     .select({ slug: members.slug })
