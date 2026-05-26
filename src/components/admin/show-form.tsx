@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useState } from "react";
+import { useFormStatus } from "react-dom";
 import { ImageUploadField } from "@/components/admin/image-upload-field";
 import { ShowCastPicker } from "@/components/admin/show-cast-picker";
 import { Button, buttonVariants } from "@/components/ui/button";
@@ -12,12 +13,23 @@ import type { Member, Show } from "@/lib/db/schema";
 import type { ShowCastCredit } from "@/lib/show-content";
 import { createShow, deleteShow, updateShow } from "@/lib/admin/actions";
 
+function SaveButton({ isNew }: { isNew: boolean }) {
+  const { pending } = useFormStatus();
+  return (
+    <Button type="submit" disabled={pending}>
+      {pending ? "Saving…" : isNew ? "Create show" : "Save"}
+    </Button>
+  );
+}
+
 export function ShowForm({
   show,
   members,
+  saved = false,
 }: {
   show?: Show;
   members: Member[];
+  saved?: boolean;
 }) {
   const [heroImageUrl, setHeroImageUrl] = useState(show?.heroImageUrl ?? "");
   const action = show ? updateShow.bind(null, show.slug) : createShow;
@@ -25,14 +37,30 @@ export function ShowForm({
 
   return (
     <form action={action} className="space-y-6">
+      {saved && (
+        <p
+          role="status"
+          className="rounded-md border border-green-200 bg-green-50 px-4 py-2 text-sm font-medium text-green-800"
+        >
+          Changes saved.
+        </p>
+      )}
       <div className="grid gap-4 sm:grid-cols-2">
         <div className="space-y-2">
           <Label htmlFor="title">Title</Label>
           <Input id="title" name="title" defaultValue={show?.title} required />
         </div>
         <div className="space-y-2">
-          <Label htmlFor="slug">Slug</Label>
-          <Input id="slug" name="slug" defaultValue={show?.slug} placeholder="auto-from-title" />
+          <Label htmlFor="slug">URL identifier</Label>
+          <Input
+            id="slug"
+            name="slug"
+            defaultValue={show?.slug}
+            placeholder="e.g. fairytales — auto-generated from title if left blank"
+          />
+          <p className="text-xs text-muted-foreground">
+            The last part of the show URL, e.g. /shows/fairytales/
+          </p>
         </div>
       </div>
 
@@ -201,8 +229,8 @@ export function ShowForm({
 
       <input type="hidden" name="published" value="on" />
 
-      <div className="flex flex-wrap gap-3">
-        <Button type="submit">{show ? "Save" : "Create show"}</Button>
+      <div className="flex flex-wrap items-center gap-3">
+        <SaveButton isNew={!show} />
         {show && (
           <>
             <Link

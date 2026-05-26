@@ -142,7 +142,7 @@ export async function updateShow(slug: string, formData: FormData) {
   revalidatePath("/shows");
   revalidatePath(`/shows/${slug}`);
   revalidatePath(`/shows/${newSlug}`);
-  redirect(`/admin/shows/${newSlug}/`);
+  redirect(`/admin/shows/${newSlug}/?saved=1`);
 }
 
 export async function deleteShow(slug: string) {

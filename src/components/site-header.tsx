@@ -1,10 +1,10 @@
 "use client";
 
-import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
 import { Menu, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { SiteLogo } from "@/components/site-logo";
 
 const navItems = [
   { href: "/about-us/", label: "About us" },
@@ -20,15 +20,8 @@ export function SiteHeader() {
     <>
       <header className="sticky top-0 z-40 border-b border-border/60 bg-background/95 backdrop-blur">
         <div className="mx-auto flex h-20 max-w-6xl items-center justify-between px-4 sm:px-6">
-          <Link href="/" className="relative block h-12 w-44 shrink-0 overflow-hidden rounded-md bg-white sm:h-14 sm:w-52">
-            <Image
-              src="/logo.png"
-              alt="Impram"
-              fill
-              className="object-contain object-left"
-              priority
-              sizes="(max-width: 640px) 176px, 208px"
-            />
+          <Link href="/" className="block h-12 w-36 shrink-0 sm:h-14 sm:w-44">
+            <SiteLogo priority />
           </Link>
 
           <nav className="hidden md:flex items-center gap-8">

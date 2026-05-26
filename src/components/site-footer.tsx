@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
+import { SiteLogo } from "@/components/site-logo";
 
 export function SiteFooter() {
   return (
@@ -9,14 +10,8 @@ export function SiteFooter() {
           href="/"
           className="flex items-center gap-3 text-muted-foreground transition-opacity hover:opacity-80"
         >
-          <span className="relative block h-9 w-16 shrink-0 overflow-hidden rounded-md bg-white sm:h-10 sm:w-[4.5rem]">
-            <Image
-              src="/logo.png"
-              alt="Impram"
-              fill
-              className="object-contain object-left"
-              sizes="72px"
-            />
+          <span className="block h-9 w-14 shrink-0 sm:h-10 sm:w-16">
+            <SiteLogo />
           </span>
           <span className="text-base font-medium leading-snug">
             English Improv Group in Gothenburg
@@ -28,7 +23,7 @@ export function SiteFooter() {
             target="_blank"
             rel="noopener noreferrer"
             className="inline-flex items-center gap-2.5 text-[15px] font-medium text-foreground/80 transition-opacity hover:opacity-80"
-            aria-label="Impram on Facebook: ImpramImprov"
+            aria-label="Impram on Facebook: Impram GBG"
           >
             <span className="relative size-8 shrink-0">
               <Image
@@ -39,7 +34,7 @@ export function SiteFooter() {
                 sizes="32px"
               />
             </span>
-            <span className="whitespace-nowrap">ImpramImprov</span>
+            <span className="whitespace-nowrap">Impram GBG</span>
           </a>
           <a
             href="https://www.instagram.com/impramgbg/"

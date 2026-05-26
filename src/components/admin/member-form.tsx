@@ -22,8 +22,16 @@ export function MemberForm({ member }: { member?: Member }) {
           <Input id="name" name="name" defaultValue={member?.name} required />
         </div>
         <div className="space-y-2">
-          <Label htmlFor="slug">Slug</Label>
-          <Input id="slug" name="slug" defaultValue={member?.slug} placeholder="auto-from-name" />
+          <Label htmlFor="slug">URL identifier</Label>
+          <Input
+            id="slug"
+            name="slug"
+            defaultValue={member?.slug}
+            placeholder="e.g. xq-lu — auto-generated from name if left blank"
+          />
+          <p className="text-xs text-muted-foreground">
+            The last part of the cast page URL, e.g. /xq-lu/
+          </p>
         </div>
       </div>
 
