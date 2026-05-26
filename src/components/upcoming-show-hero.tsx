@@ -37,7 +37,9 @@ export function UpcomingShowHero({ show }: { show: Show }) {
               <p className="text-sm text-impram-cream/80">{show.venue}</p>
             )}
             {teaser && (
-              <p className="text-base leading-relaxed text-impram-cream/90">{teaser}</p>
+              <p className="whitespace-pre-line text-base leading-relaxed text-impram-cream/90">
+                {teaser}
+              </p>
             )}
             <div className="pt-2">
               <Link

@@ -177,7 +177,7 @@ export async function createMember(formData: FormData) {
   revalidatePath("/");
   revalidatePath("/cast");
   revalidatePath(`/${slug}`);
-  redirect(`/admin/members/${slug}/`);
+  redirect(`/admin/members/${slug}/?saved=1`);
 }
 
 export async function updateMember(slug: string, formData: FormData) {
@@ -204,7 +204,7 @@ export async function updateMember(slug: string, formData: FormData) {
   revalidatePath("/cast");
   revalidatePath(`/${slug}`);
   revalidatePath(`/${newSlug}`);
-  redirect(`/admin/members/${newSlug}/`);
+  redirect(`/admin/members/${newSlug}/?saved=1`);
 }
 
 export async function deleteMember(slug: string) {

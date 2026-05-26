@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useState } from "react";
+import { useFormStatus } from "react-dom";
 import { ImageUploadField } from "@/components/admin/image-upload-field";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -10,12 +11,35 @@ import { Textarea } from "@/components/ui/textarea";
 import type { Member } from "@/lib/db/schema";
 import { createMember, deleteMember, updateMember } from "@/lib/admin/actions";
 
-export function MemberForm({ member }: { member?: Member }) {
+function SaveButton({ isNew }: { isNew: boolean }) {
+  const { pending } = useFormStatus();
+  return (
+    <Button type="submit" disabled={pending}>
+      {pending ? "Saving…" : isNew ? "Create member" : "Save"}
+    </Button>
+  );
+}
+
+export function MemberForm({
+  member,
+  saved = false,
+}: {
+  member?: Member;
+  saved?: boolean;
+}) {
   const [photoUrl, setPhotoUrl] = useState(member?.photoUrl ?? "");
   const action = member ? updateMember.bind(null, member.slug) : createMember;
 
   return (
     <form action={action} className="space-y-6">
+      {saved && (
+        <p
+          role="status"
+          className="rounded-md border border-green-200 bg-green-50 px-4 py-2 text-sm font-medium text-green-800"
+        >
+          Changes saved.
+        </p>
+      )}
       <div className="grid gap-4 sm:grid-cols-2">
         <div className="space-y-2">
           <Label htmlFor="name">Name</Label>
@@ -56,8 +80,8 @@ export function MemberForm({ member }: { member?: Member }) {
 
       <input type="hidden" name="published" value="on" />
 
-      <div className="flex flex-wrap gap-3">
-        <Button type="submit">{member ? "Save" : "Create member"}</Button>
+      <div className="flex flex-wrap items-center gap-3">
+        <SaveButton isNew={!member} />
         {member && (
           <>
             <Link

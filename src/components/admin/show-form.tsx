@@ -111,7 +111,7 @@ export function ShowForm({
           name="homeTeaser"
           rows={3}
           defaultValue={show?.homeTeaser ?? ""}
-          placeholder="Short blurb shown on the homepage under the show title"
+          placeholder="Short blurb shown on the homepage under the show title. Press Enter for a new line."
         />
       </div>
 
