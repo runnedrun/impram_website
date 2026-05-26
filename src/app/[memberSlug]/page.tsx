@@ -69,20 +69,21 @@ export default async function MemberPage({ params }: Props) {
             </div>
           )}
 
-          <div className="min-w-0">
+          <div className="min-w-0 self-center sm:self-auto">
             <h1 className={`${sectionTitleClass} text-2xl leading-tight sm:text-4xl md:text-5xl`}>
               {member.name}
             </h1>
             <p className="mt-1 text-sm text-muted-foreground sm:mt-2 sm:text-lg">
               {member.role}
             </p>
-            {member.bio.trim() && (
-              <div className="mt-4 sm:mt-6">
-                <MemberBio bio={member.bio} name={member.name} />
-              </div>
-            )}
           </div>
         </div>
+
+        {member.bio.trim() && (
+          <div className="mt-8 sm:mt-10">
+            <MemberBio bio={member.bio} name={member.name} />
+          </div>
+        )}
 
         {memberShows.length > 0 && (
           <section className="mt-12 rounded-2xl border border-border/60 bg-muted/20 p-6 shadow-sm sm:p-8">
