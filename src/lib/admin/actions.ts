@@ -14,6 +14,10 @@ function timestamp() {
   return new Date().toISOString();
 }
 
+function memberFirstName(name: string): string {
+  return name.trim().split(/\s+/)[0] ?? name;
+}
+
 async function setExclusiveHomepageShow(slug: string) {
   await db.update(shows).set({ featuredOnHome: false });
   await db.update(shows).set({ featuredOnHome: true }).where(eq(shows.slug, slug));
@@ -82,6 +86,30 @@ export async function reorderMembers(orderedSlugs: string[]) {
       .set({ sortOrder: i, updatedAt: timestamp() })
       .where(eq(members.slug, orderedSlugs[i]));
   }
+  revalidatePath("/admin/members");
+  revalidatePath("/cast");
+}
+
+export async function sortMembersAlphabetically() {
+  await requireAdmin();
+  const allMembers = await db.select().from(members);
+  const sorted = [...allMembers].sort((a, b) => {
+    const byFirstName = memberFirstName(a.name).localeCompare(
+      memberFirstName(b.name),
+      undefined,
+      { sensitivity: "base" },
+    );
+    if (byFirstName !== 0) return byFirstName;
+    return a.name.localeCompare(b.name, undefined, { sensitivity: "base" });
+  });
+
+  for (let i = 0; i < sorted.length; i++) {
+    await db
+      .update(members)
+      .set({ sortOrder: i, updatedAt: timestamp() })
+      .where(eq(members.slug, sorted[i].slug));
+  }
+
   revalidatePath("/admin/members");
   revalidatePath("/cast");
 }

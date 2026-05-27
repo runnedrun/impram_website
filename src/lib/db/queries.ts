@@ -1,4 +1,4 @@
-import { and, asc, desc, eq, ne, sql } from "drizzle-orm";
+import { and, asc, desc, eq, notInArray, sql } from "drizzle-orm";
 import { db } from "./index";
 import {
   members,
@@ -63,19 +63,27 @@ export async function getShowBySlug(slug: string) {
   return rows[0] ?? null;
 }
 
-export async function getRelatedShows(show: Show, limit = 3) {
-  return db
+export async function getOtherShowsForShowPage(show: Show, limit = 3) {
+  const currentShow = await getUpcomingShow();
+  const includeCurrent = currentShow != null && currentShow.slug !== show.slug;
+  const excludeSlugs = includeCurrent
+    ? [show.slug, currentShow.slug]
+    : [show.slug];
+
+  const archivedOthers = await db
     .select()
     .from(shows)
     .where(
       and(
         eq(shows.published, true),
-        eq(shows.status, show.status),
-        ne(shows.slug, show.slug),
+        eq(shows.status, "archived"),
+        notInArray(shows.slug, excludeSlugs),
       ),
     )
-    .orderBy(asc(shows.sortOrder))
-    .limit(limit);
+    .orderBy(asc(shows.sortOrder), desc(shows.updatedAt))
+    .limit(includeCurrent ? limit - 1 : limit);
+
+  return includeCurrent ? [currentShow, ...archivedOthers] : archivedOthers;
 }
 
 export async function getAllShowSlugs() {

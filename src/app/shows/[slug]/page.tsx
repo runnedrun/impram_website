@@ -9,7 +9,7 @@ import { SiteShell } from "@/components/site-shell";
 import {
   getAllShowSlugs,
   getPublishedMembers,
-  getRelatedShows,
+  getOtherShowsForShowPage,
   getShowBySlug,
 } from "@/lib/db/queries";
 import { showHasUpcomingBlock } from "@/lib/show-content";
@@ -44,7 +44,7 @@ export default async function ShowPage({ params }: Props) {
   if (!show) notFound();
 
   const [related, publishedMembers] = await Promise.all([
-    getRelatedShows(show),
+    getOtherShowsForShowPage(show),
     getPublishedMembers(),
   ]);
 
