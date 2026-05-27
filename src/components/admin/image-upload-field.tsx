@@ -8,7 +8,7 @@ import { cn } from "@/lib/utils";
 
 type Props = {
   label: string;
-  name: string;
+  name?: string;
   value: string;
   onChange: (url: string) => void;
   hiddenName?: string;
@@ -36,7 +36,11 @@ export function ImageUploadField({
     try {
       const fd = new FormData();
       fd.append("file", file);
-      const res = await fetch("/api/admin/upload/", { method: "POST", body: fd });
+      const res = await fetch("/api/admin/upload/", {
+        method: "POST",
+        body: fd,
+        credentials: "same-origin",
+      });
       if (!res.ok) throw new Error("Upload failed");
       const data = (await res.json()) as { url?: string };
       if (!data.url) throw new Error("Upload failed");
@@ -86,7 +90,7 @@ export function ImageUploadField({
       {uploading && (
         <p className="text-sm text-muted-foreground">Uploading…</p>
       )}
-      <input type="hidden" name={name} value={value} readOnly />
+      {name && <input type="hidden" name={name} value={value} readOnly />}
       <Input
         value={value}
         onChange={(e) => onChange(e.target.value)}

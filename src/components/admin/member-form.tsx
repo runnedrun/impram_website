@@ -29,10 +29,19 @@ export function MemberForm({
 }) {
   const [photoUrl, setPhotoUrl] = useState(member?.photoUrl ?? "");
   const [bio, setBio] = useState(member?.bio ?? "");
-  const action = member ? updateMember.bind(null, member.slug) : createMember;
+
+  async function submitMember(formData: FormData) {
+    formData.set("photoUrl", photoUrl);
+    formData.set("bio", bio);
+    if (member) {
+      await updateMember(member.slug, formData);
+    } else {
+      await createMember(formData);
+    }
+  }
 
   return (
-    <form action={action} className="space-y-6">
+    <form action={submitMember} className="space-y-6">
       {saved && (
         <p
           role="status"
@@ -55,7 +64,7 @@ export function MemberForm({
             placeholder="e.g. xq-lu — auto-generated from name if left blank"
           />
           <p className="text-xs text-muted-foreground">
-            The last part of the cast page URL, e.g. /xq-lu/
+            Lowercase letters, numbers, and hyphens only. Capitals are converted automatically.
           </p>
         </div>
       </div>
@@ -67,7 +76,6 @@ export function MemberForm({
 
       <ImageUploadField
         label="Photo"
-        name="photoUrl"
         value={photoUrl}
         onChange={setPhotoUrl}
         aspectClassName="aspect-square max-w-[200px]"
@@ -78,7 +86,6 @@ export function MemberForm({
         <Label htmlFor="bio">Bio</Label>
         <Textarea
           id="bio"
-          name="bio"
           rows={8}
           value={bio}
           onChange={(e) => setBio(e.target.value)}

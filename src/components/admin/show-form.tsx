@@ -59,7 +59,7 @@ export function ShowForm({
             placeholder="e.g. fairytales — auto-generated from title if left blank"
           />
           <p className="text-xs text-muted-foreground">
-            The last part of the show URL, e.g. /shows/fairytales/
+            Lowercase letters, numbers, and hyphens only. Capitals are converted automatically.
           </p>
         </div>
       </div>

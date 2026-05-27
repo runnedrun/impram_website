@@ -7,7 +7,7 @@ import { db } from "@/lib/db";
 import { members, openRehearsalDates, shows } from "@/lib/db/schema";
 import type { ShowCastCredit } from "@/lib/show-content";
 import { requireAdmin } from "@/lib/session";
-import { assertValidSlug, toSlug } from "@/lib/slug";
+import { resolveSlug } from "@/lib/slug";
 
 function timestamp() {
   return new Date().toISOString();
@@ -88,8 +88,7 @@ export async function reorderMembers(orderedSlugs: string[]) {
 export async function createShow(formData: FormData) {
   await requireAdmin();
   const title = String(formData.get("title") ?? "").trim();
-  let slug = String(formData.get("slug") ?? "").trim() || toSlug(title);
-  assertValidSlug(slug);
+  const slug = resolveSlug(String(formData.get("slug") ?? ""), title);
 
   const fields = readShowFields(formData);
   const now = timestamp();
@@ -118,8 +117,8 @@ export async function createShow(formData: FormData) {
 export async function updateShow(slug: string, formData: FormData) {
   await requireAdmin();
   const title = String(formData.get("title") ?? "").trim();
-  const newSlug = String(formData.get("slug") ?? slug).trim();
-  assertValidSlug(newSlug);
+  const rawSlug = String(formData.get("slug") ?? "").trim();
+  const newSlug = rawSlug ? resolveSlug(rawSlug, title) : slug;
 
   const fields = readShowFields(formData);
 
@@ -156,8 +155,7 @@ export async function deleteShow(slug: string) {
 export async function createMember(formData: FormData) {
   await requireAdmin();
   const name = String(formData.get("name") ?? "").trim();
-  let slug = String(formData.get("slug") ?? "").trim() || toSlug(name);
-  assertValidSlug(slug);
+  const slug = resolveSlug(String(formData.get("slug") ?? ""), name);
 
   const now = timestamp();
   await db.insert(members).values({
@@ -183,8 +181,8 @@ export async function createMember(formData: FormData) {
 export async function updateMember(slug: string, formData: FormData) {
   await requireAdmin();
   const name = String(formData.get("name") ?? "").trim();
-  const newSlug = String(formData.get("slug") ?? slug).trim();
-  assertValidSlug(newSlug);
+  const rawSlug = String(formData.get("slug") ?? "").trim();
+  const newSlug = rawSlug ? resolveSlug(rawSlug, name) : slug;
 
   await db
     .update(members)
