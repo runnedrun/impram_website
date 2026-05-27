@@ -11,10 +11,15 @@ export function UpcomingShowHero({ show }: { show: Show }) {
   const teaser = showTeaser(show);
   const when = formatUpcomingDate(show.upcomingAt);
 
+  const showHref = `/shows/${show.slug}/`;
+
   return (
     <section>
       <h2 className={`mb-6 ${sectionTitleClass} text-2xl`}>Currently playing</h2>
-      <div className="overflow-hidden rounded-2xl bg-impram-navy text-impram-cream shadow-sm transition-all duration-300 hover:shadow-md">
+      <Link
+        href={showHref}
+        className="group block overflow-hidden rounded-2xl bg-impram-navy text-impram-cream shadow-sm transition-all duration-300 hover:shadow-md"
+      >
         <div className="grid md:grid-cols-2">
           {image && (
             <div className="relative aspect-[16/10] min-h-[220px] md:aspect-auto md:min-h-[320px]">
@@ -22,7 +27,7 @@ export function UpcomingShowHero({ show }: { show: Show }) {
                 src={image}
                 alt={show.title}
                 fill
-                className="object-cover"
+                className="object-cover transition-transform duration-500 group-hover:scale-[1.02]"
                 sizes="(max-width: 768px) 100vw, 50vw"
                 priority
               />
@@ -42,19 +47,18 @@ export function UpcomingShowHero({ show }: { show: Show }) {
               </p>
             )}
             <div className="pt-2">
-              <Link
-                href={`/shows/${show.slug}/`}
+              <span
                 className={cn(
                   buttonVariants({ size: "lg" }),
-                  "bg-impram-accent text-impram-navy hover:bg-impram-accent/90",
+                  "bg-impram-accent text-impram-navy group-hover:bg-impram-accent/90",
                 )}
               >
                 View show details
-              </Link>
+              </span>
             </div>
           </div>
         </div>
-      </div>
+      </Link>
     </section>
   );
 }

@@ -139,8 +139,6 @@ export function ShowBody({
               <div className="border-t border-border/60 bg-muted/20 px-6 py-6">
                 <a
                   href={show.ticketUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
                   className={cn(
                     buttonVariants({ size: "lg" }),
                     "w-full bg-impram-accent text-impram-navy hover:bg-impram-accent/90 sm:w-auto",

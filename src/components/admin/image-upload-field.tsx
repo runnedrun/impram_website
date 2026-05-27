@@ -33,13 +33,18 @@ export function ImageUploadField({
     const file = e.target.files?.[0];
     if (!file) return;
     setUploading(true);
-    const fd = new FormData();
-    fd.append("file", file);
-    const res = await fetch("/api/admin/upload/", { method: "POST", body: fd });
-    const data = (await res.json()) as { url: string };
-    onChange(data.url);
-    setUploading(false);
-    e.target.value = "";
+    try {
+      const fd = new FormData();
+      fd.append("file", file);
+      const res = await fetch("/api/admin/upload/", { method: "POST", body: fd });
+      if (!res.ok) throw new Error("Upload failed");
+      const data = (await res.json()) as { url?: string };
+      if (!data.url) throw new Error("Upload failed");
+      onChange(data.url);
+    } finally {
+      setUploading(false);
+      e.target.value = "";
+    }
   }
 
   return (
@@ -81,8 +86,8 @@ export function ImageUploadField({
       {uploading && (
         <p className="text-sm text-muted-foreground">Uploading…</p>
       )}
+      <input type="hidden" name={name} value={value} readOnly />
       <Input
-        name={name}
         value={value}
         onChange={(e) => onChange(e.target.value)}
         placeholder="Image URL"

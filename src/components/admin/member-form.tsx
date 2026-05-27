@@ -28,6 +28,7 @@ export function MemberForm({
   saved?: boolean;
 }) {
   const [photoUrl, setPhotoUrl] = useState(member?.photoUrl ?? "");
+  const [bio, setBio] = useState(member?.bio ?? "");
   const action = member ? updateMember.bind(null, member.slug) : createMember;
 
   return (
@@ -75,7 +76,13 @@ export function MemberForm({
 
       <div className="space-y-2">
         <Label htmlFor="bio">Bio</Label>
-        <Textarea id="bio" name="bio" rows={8} defaultValue={member?.bio} />
+        <Textarea
+          id="bio"
+          name="bio"
+          rows={8}
+          value={bio}
+          onChange={(e) => setBio(e.target.value)}
+        />
       </div>
 
       <input type="hidden" name="published" value="on" />
