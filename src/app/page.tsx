@@ -43,7 +43,7 @@ export default async function HomePage() {
         <section className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6 pt-10 border-t border-border/60">
           <Link href="/shows/" className="group flex flex-col p-6 rounded-2xl bg-muted/30 hover:bg-muted/60 transition-colors border border-border/40">
             <h3 className={`${sectionTitleClass} text-2xl mb-2 transition-colors group-hover:text-impram-link`}>Shows</h3>
-            <p className="text-muted-foreground text-sm">Browse our full history of improvised theater.</p>
+            <p className="text-muted-foreground text-sm">Browse our full history of previous shows.</p>
           </Link>
           <Link href="/cast/" className="group flex flex-col p-6 rounded-2xl bg-muted/30 hover:bg-muted/60 transition-colors border border-border/40">
             <h3 className={`${sectionTitleClass} text-2xl mb-2 transition-colors group-hover:text-impram-link`}>Cast</h3>
