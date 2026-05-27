@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import type { Member } from "@/lib/db/schema";
 import type { ShowCastCredit } from "@/lib/show-content";
+import { dedupeCastCredits } from "@/lib/show-content";
 
 export function ShowCastPicker({
   members,
@@ -13,7 +14,9 @@ export function ShowCastPicker({
   members: Member[];
   initialCredits: ShowCastCredit[];
 }) {
-  const [credits, setCredits] = useState<ShowCastCredit[]>(initialCredits);
+  const [credits, setCredits] = useState<ShowCastCredit[]>(() =>
+    dedupeCastCredits(initialCredits),
+  );
 
   function toggle(slug: string, checked: boolean) {
     setCredits((current) => {

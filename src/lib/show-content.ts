@@ -5,6 +5,23 @@ export type ShowCastCredit = {
   role?: string | null;
 };
 
+export function dedupeCastCredits(credits: ShowCastCredit[]): ShowCastCredit[] {
+  const seen = new Set<string>();
+  const deduped: ShowCastCredit[] = [];
+
+  for (const credit of credits) {
+    const memberSlug = credit.memberSlug?.trim();
+    if (!memberSlug || seen.has(memberSlug)) continue;
+    seen.add(memberSlug);
+    deduped.push({
+      memberSlug,
+      role: credit.role?.trim() || undefined,
+    });
+  }
+
+  return deduped;
+}
+
 export type ShowDisplayCast = {
   slug: string;
   name: string;
@@ -306,7 +323,7 @@ export function resolveShowCast(
   show: Show,
   members: Member[],
 ): ShowDisplayCast[] {
-  const credits = (show.castCredits ?? []) as ShowCastCredit[];
+  const credits = dedupeCastCredits((show.castCredits ?? []) as ShowCastCredit[]);
   const bySlug = new Map(members.map((m) => [m.slug, m]));
 
   const cast: ShowDisplayCast[] = [];

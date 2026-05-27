@@ -6,6 +6,7 @@ import { redirect } from "next/navigation";
 import { db } from "@/lib/db";
 import { members, openRehearsalDates, shows } from "@/lib/db/schema";
 import type { ShowCastCredit } from "@/lib/show-content";
+import { dedupeCastCredits } from "@/lib/show-content";
 import { requireAdmin } from "@/lib/session";
 import { resolveSlug } from "@/lib/slug";
 
@@ -20,7 +21,7 @@ async function setExclusiveHomepageShow(slug: string) {
 
 function parseCastCredits(formData: FormData): ShowCastCredit[] {
   const raw = String(formData.get("castCredits") ?? "[]");
-  return JSON.parse(raw) as ShowCastCredit[];
+  return dedupeCastCredits(JSON.parse(raw) as ShowCastCredit[]);
 }
 
 function readShowFields(formData: FormData) {
