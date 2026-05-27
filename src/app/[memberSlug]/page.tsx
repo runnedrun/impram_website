@@ -81,7 +81,7 @@ export default async function MemberPage({ params }: Props) {
 
         {member.bio.trim() && (
           <div className="mt-8 sm:mt-10">
-            <MemberBio bio={member.bio} name={member.name} />
+                <MemberBio bio={member.bio} />
           </div>
         )}
 
